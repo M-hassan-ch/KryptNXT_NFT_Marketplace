@@ -31,9 +31,6 @@ a:hover {
     text-decoration: none;
 }
 
-/* .color{
-    color: white;
-} */
 
 .inputSearch {
     padding: 6px;
@@ -55,6 +52,7 @@ a:hover {
 
 .btnLogin:hover {
     color: white;
+    background: #1D1D1D;
     border: 1px solid rgba(250, 255, 1, 1);
 }
 

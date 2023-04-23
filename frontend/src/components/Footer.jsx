@@ -19,7 +19,7 @@ export default function Footer() {
                             </div>
                         </div>
 
-                        <div className={`col-md-7 ${style.yellowBorder} align-self-baseline mt-md-2`}>
+                        <div className={`col-md-7 ${style.yellowBorder} mt-md-4`}>
                             <div className={`row ${style.redBorder}`}>
                                 <div className={`col-md-3 ms-md-5 ${style.yellowBorder}`}>
                                     <h6 className={`${style.footerHeading}`}>My Account</h6>
@@ -40,8 +40,8 @@ export default function Footer() {
                                     </ul>
                                 </div>
 
-                                <div className={`col-md-3 ${style.yellowBorder} p-0 m-0`}>
-                                    <h6 className={`${style.footerHeading} p-0 m-0`}>Resources</h6>
+                                <div className={`col-md-3 p-0 m-0 ${style.yellowBorder}`}>
+                                    <h6 className={`${style.footerHeading}`}>Resources</h6>
                                     <ul className={`${style.bullets}`}>
                                         <li className={`${style.footerItem}`}> <a href="/">Learn</a></li>
                                         <li className={`${style.footerItem}`}> <a href="/">Help Center</a></li>
