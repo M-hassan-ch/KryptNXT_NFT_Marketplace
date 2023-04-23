@@ -1,0 +1,43 @@
+.blueBorder {
+    /* border: 2px solid blue; */
+}
+
+.redBorder {
+    /* border: 2px solid red; */
+}
+
+.yellowBorder {
+    /* border: 2px solid yellow; */
+}
+
+footer {
+    color: white;
+    background: hsl(300, 69%, 8%);
+}
+
+.bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    /* border: 2px solid red; */
+}
+
+.footerItem {
+    /* border: 2px solid red; */
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+.footerDsc {
+    font-size: 12px;
+    text-align: justify;
+}
+
+.footerHeading{
+    margin-bottom: 20px;
+    font-weight: bolder;
+}
+
+.imgLogo{
+    width: 60%;
+}
