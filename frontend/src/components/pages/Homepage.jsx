@@ -3,6 +3,7 @@ import Navbar from '../Navbar'
 import Footer from '../Footer'
 import style from '../../stylesheets/homepage.module.css'
 import welcomeImg from '../icons/welcome.png'
+import Card from '../Card'
 
 export default function Homepage() {
     return (
@@ -12,6 +13,7 @@ export default function Homepage() {
             {/* Welcome section */}
             <section className={`container my-md-5`}>
                 <div className={`row ${style.redBorder} justify-content-evenly align-items-centr`}>
+
                     <div className={`col-md-4 mt-5 pt-5 ${style.yellowBorder} `}>
                         <div>
                             <h1>
@@ -21,7 +23,7 @@ export default function Homepage() {
                         </div>
 
                         <div className={`py-md-3`}>
-                            <h6 style={{fontSize: '20px', fontWeight: 'lighter' }}>
+                            <h6 style={{ fontSize: '20px', fontWeight: 'lighter' }}>
                                 Lorem ipsum dolor sit amet,
                                 cons <br />etetur sadipscing elitr, sed
                             </h6>
@@ -45,14 +47,30 @@ export default function Homepage() {
                                 <div className={`col-md-1 me-md-1 ${style.box2} `}></div>
                                 <div className={`col-md-1 ${style.box2} `}></div>
                             </div>
-                            {/* <div className={`${style.box1} `}></div>
-                            <div className={`${style.box2} `}></div>
-                            <div className={`${style.box1} `}></div> */}
                         </div>
                     </div>
 
                 </div>
             </section>
+
+            {/* explore section */}
+            <div>
+                <section className={`container my-md-5`}>
+                    <div className={`row ${style.yellowBorder}`}>
+                        <div className={`col-md-4 ${style.redBorder} `}>
+
+                        </div>
+
+                        <div className={`col-md-7 ${style.blueBorder} `}>
+                            
+                            <div className={`row ${style.redBorder}`}>
+                                <Card></Card>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+            </div>
 
             <Footer />
         </>
