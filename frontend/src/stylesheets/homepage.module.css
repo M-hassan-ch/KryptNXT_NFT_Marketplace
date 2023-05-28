@@ -22,12 +22,35 @@ section {
     /* text-fill-color: transparent; */
 }
 
+.exploreSection {
+    background: rgba(56, 31, 75, 0.69);
+    box-shadow: inset 0px 0px 100px 10px rgba(0, 0, 0, 0.25);
+}
+
+.tableSection{
+    background: rgba(30, 1, 30, 0.82);
+}
+
 .btnExplore {
     color: white;
     background: #1D1D1D;
     border: 1px solid #EB01FF;
     /* width: 100%; */
 }
+
+.btnExplorePlateform {
+    color: #390C4F;
+    background: white;
+    border: 1px solid #EB01FF;
+    font-weight: bolder;
+}
+
+.btnExplorePlateform:hover {
+    color: white;
+    background: #4E215F;
+    border: 1px solid white;
+}
+
 
 .btnExplore:hover {
     color: white;
@@ -45,13 +68,22 @@ section {
     display: flex;
 }
 
-.box1, .box2{
+.box1,
+.box2 {
     height: 5px;
     border-radius: 20px;
     background: #D9D9D9;
     cursor: pointer;
 }
 
-.box2{
+.box2 {
     background: rgba(217, 217, 217, 0.77);
+}
+
+td{
+    color: white;
+}
+
+table{
+    background: transparent;
 }
