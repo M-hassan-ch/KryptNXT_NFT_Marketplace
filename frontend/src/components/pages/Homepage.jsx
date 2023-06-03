@@ -106,7 +106,7 @@ export default function Homepage() {
             </section>
 
 
-            {/* section */}
+            {/*table section */}
 
             <section className={`container-fluid mt-md-5 ${style.tableSection}`}>
                 <div className={`row ${style.yellowBorder}`}>
