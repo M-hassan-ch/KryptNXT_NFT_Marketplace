@@ -1,6 +1,7 @@
 import React from 'react'
 import style from "../stylesheets/navbar.module.css";
 import logo from './icons/logo.png';
+import { Link } from 'react-router-dom'
 
 export default function Navbar() {
   return (
@@ -21,9 +22,9 @@ export default function Navbar() {
               <div className={`col-md-5 ${style.blueBorder} p-0`}>
                 <nav>
                   <ul>
-                    <li><a href="/">EXPLORE</a></li>
-                    <li><a href="/">CREATE</a></li>
-                    <li><a href="/">MY NFTs</a></li>
+                    <li ><Link to="/explore">Explore</Link></li>
+                    <li><Link to="/createNft">Create</Link></li>
+                    <li><Link to="/createNft">MY NFTs</Link></li>
                   </ul>
                 </nav>
               </div>
@@ -34,7 +35,7 @@ export default function Navbar() {
             <button className={`btn ${style.btnLogin}`}>Login</button>
           </div>
         </div>
-        
+
       </header>
     </>
   )

@@ -1,0 +1,29 @@
+.blueBorder {
+    border: 3px solid blue;
+}
+
+.redBorder {
+    border: 3px solid red;
+}
+
+.yellowBorder {
+    border: 3px solid yellow;
+}
+
+.formBackground {
+    background: rgba(49, 8, 49, 0.58);
+    border-radius: 110px;
+}
+
+.polygonIcon{
+    height: 30px;
+    width: 30px;
+}
+
+.greyColor{
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.colorGreen {
+    color: green;
+}

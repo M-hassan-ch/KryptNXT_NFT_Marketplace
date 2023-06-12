@@ -8,7 +8,7 @@ import profileIcon2 from '../icons/profileIcon2.png'
 import profileIcon3 from '../icons/profileIcon1.png'
 import Card from '../Card'
 import Carousel from 'react-material-ui-carousel'
-import { Paper, Button } from '@mui/material'
+// import { Paper, Button } from '@mui/material'
 
 
 function PriceCol(props) {
@@ -36,7 +36,7 @@ export default function Homepage() {
 
                     <div className={`col-md-4 mt-5 pt-5 ${style.yellowBorder} `}>
                         <div>
-                            <h1 style={{fontSize: '60px'}}>
+                            <h1 style={{ fontSize: '60px' }}>
                                 Explore, collect,<br />
                                 and sell <span className={`${style.gradientText} `}>NFTs</span>
                             </h1>
