@@ -104,13 +104,13 @@ export default function Homepage() {
 
                             <Carousel autoPlay={false} animation={'slide'} indicators={false} swipe={true} cycleNavigation={false} navButtonsAlwaysVisible={true}>
                                 <div className={`row ${style.redBorder} p-0 m-0`}>
-                                    <Card></Card>
-                                    <Card></Card>
-                                    <Card></Card>
+                                    <Card colSize = {3}></Card>
+                                    <Card colSize = {3}></Card>
+                                    <Card colSize = {3}></Card>
                                 </div>
 
                                 <div className={`row ${style.redBorder} p-0 m-0`}>
-                                    <Card></Card>
+                                    <Card colSize = {3}></Card>
                                 </div>
 
 

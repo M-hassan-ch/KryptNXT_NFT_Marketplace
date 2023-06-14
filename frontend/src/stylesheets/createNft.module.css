@@ -15,15 +15,68 @@
     border-radius: 30px;
 }
 
-.polygonIcon{
+.polygonIcon {
     height: 30px;
     width: 30px;
 }
 
-.greyColor{
+.greyColor {
     color: rgba(255, 255, 255, 0.65);
 }
 
 .colorGreen {
     color: green;
+}
+
+.formLabel {
+    font-weight: bold;
+    font-size: 26px;
+    letter-spacing: 1px;
+}
+
+.inputField,
+textarea {
+    background: rgba(142, 142, 142, 0.12);
+    border-radius: 12px;
+    color: white;
+    border: none;
+}
+
+textarea {
+    resize: none;
+}
+
+.inputField::placeholder,
+textarea::placeholder {
+    color: rgb(185, 185, 185);
+}
+
+.file {
+    border: 1px dashed #808080;
+    background: rgba(142, 142, 142, 0.12);
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.file.dragging {
+    background-color: #f2f2f2;
+}
+
+.file p {
+    margin: 0;
+}
+
+.btnCreateNft {
+    width: 100%;
+    color: #390C4F;
+    background: white;
+    border: 1px solid #EB01FF;
+    font-weight: bolder;
+}
+
+.btnCreateNft:hover {
+    color: white;
+    background: transparent;
+    border: 1px solid white;
 }

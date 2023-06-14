@@ -14,28 +14,36 @@
     color: white;
 } */
 
-.nft{
+.nft {
     width: 100%;
     height: 250px;
+    border-radius: 15px;
 }
 
-.greyColor{
+.greyColor {
     color: rgba(255, 255, 255, 0.65);
 }
 
-.cardColor{
-    background: #282C4B;
-}
-
-.nftName{
+.nftName {
     font-size: 30px;
 }
 
-.nftDesc{
+.nftDesc {
     font-size: 16px;
+    max-height: 75px;
+
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.card{
+.card {
     border-radius: 12px;
     border: 1px solid #F4F4F4;
+}
+
+.textOverflow {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
