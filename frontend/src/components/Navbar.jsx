@@ -22,7 +22,7 @@ export default function Navbar() {
               <div className={`col-md-5 ${style.blueBorder} p-0`}>
                 <nav>
                   <ul>
-                    <li ><Link to="/explore">Explore</Link></li>
+                    <li ><Link to="/explore/nfts">Explore</Link></li>
                     <li><Link to="/createNft">Create</Link></li>
                     <li><Link to="/createNft">MY NFTs</Link></li>
                   </ul>

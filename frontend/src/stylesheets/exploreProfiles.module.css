@@ -1,0 +1,27 @@
+
+.blueBorder {
+    border: 3px solid blue;
+}
+
+.redBorder {
+    border: 3px solid red;
+}
+
+.yellowBorder {
+    border: 3px solid yellow;
+}
+
+.explorePage{
+    background: #210621;
+}
+
+.exploreOptions{
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.activeBar{
+    background: linear-gradient(129.49deg, #612257 7.67%, #952690 27.15%, #6F2D9A 46.99%, #672E99 69.85%, #45275D 99.79%, rgba(128, 36, 119, 0) 99.8%);
+    height: 10px;
+    width: 60%;
+}
