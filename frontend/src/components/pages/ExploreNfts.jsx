@@ -7,13 +7,16 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { TextField, InputAdornment, IconButton } from '@mui/material';
 import { Search } from '@mui/icons-material';
+import ExploreCard from '../ExploreCard';
 
 export default function ExploreNfts() {
+    let desc = 'Lorem ipsum dolor sit amet,  dlkss consetetur It is a long established fact Lorem ipsum dolor sit amet,  dlkss consetetur '
     return (
         <>
             <div className={`${style.explorePage}`}>
                 <section className={`container`}>
 
+                    {/* explore options */}
                     <div className={`row ${style.yellowBorder}`}>
                         <div className={`col-md-2 ${style.blueBorder}`}>
                             <Link to="/explore/nfts" className={`${style.exploreOptions}`}>NFTs</Link>
@@ -25,6 +28,7 @@ export default function ExploreNfts() {
                         </div>
                     </div>
 
+                    {/* filters */}
                     <div className={`row mt-md-5 ${style.yellowBorder} justify-content-between`}>
                         <div className={`col-md-2 ${style.blueBorder}`}>
                             <Button className={`px-md-4 py-md-2 w-100 ${style.btnFilter}`} sx={{ background: 'rgba(142, 142, 142, 0.12)', fontSize: '18px', fontWeight: 'bold', borderRadius: '8px' }} variant="contained" startIcon={<ArrowBackIosIcon />}>
@@ -55,7 +59,7 @@ export default function ExploreNfts() {
                                         },
                                     },
                                 }}
-                                sx={{ background: 'rgba(142, 142, 142, 0.12)', fontSize: '18px', fontWeight: 'bold', borderRadius: '8px', height:'49px' }}
+                                sx={{ background: 'rgba(142, 142, 142, 0.12)', fontSize: '18px', fontWeight: 'bold', borderRadius: '8px', height: '49px' }}
                                 className={`w-100`}
                             />
                         </div>
@@ -68,7 +72,10 @@ export default function ExploreNfts() {
 
                     </div>
 
-                    <h1>Explore NFT</h1>
+                    {/* cards */}
+                    <div className={`row mt-md-5 ${style.yellowBorder} justify-content-between`}>
+                        <ExploreCard colSize={3} custom={`ms-md-3`} title={''} desc={desc} copies={''} price={''} img={''} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                    </div>
                 </section>
             </div>
 

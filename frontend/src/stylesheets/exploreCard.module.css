@@ -1,0 +1,62 @@
+.blueBorder {
+    /* border: 4px solid blue; */
+}
+
+.redBorder {
+    /* border: 4px solid red; */
+}
+
+.yellowBorder {
+    /* border: 4px solid yellow; */
+}
+
+/* section {
+    color: white;
+} */
+
+.nft {
+    width: 100%;
+    height: 250px;
+    border-radius: 20px;
+}
+
+.greyColor {
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.nftName {
+    font-size: 30px;
+}
+
+.nftDesc {
+    font-size: 16px;
+    max-height: 75px;
+    text-align: justify;
+
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card {
+    border-radius: 12px;
+    border: 1px solid #F4F4F4;
+}
+
+.textOverflow {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btnView {
+    width: 100%;
+    border: 1px solid #EB01FF;
+    font-weight: bolder;
+}
+
+.btnView:hover {
+    color: white;
+    background: transparent;
+    border: 1px solid white;
+}
