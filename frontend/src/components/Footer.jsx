@@ -2,10 +2,10 @@ import React from 'react'
 import style from "../stylesheets/footer.module.css";
 import logo from './icons/logo.png';
 
-export default function Footer() {
+export default function Footer(props) {
     return (
         <>
-            <footer>
+            <footer style={{ background: props.background ? props.background : 'hsl(300, 69%, 8%)' }}>
                 <div className={`container py-md-4`}>
                     <div className={`row justify-content-around`}>
 

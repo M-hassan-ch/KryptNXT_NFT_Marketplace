@@ -4,17 +4,23 @@ import { Link } from 'react-router-dom'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import Button from '@mui/material/Button';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
+import Navbar from '../Navbar'
+import Footer from '../Footer'
 import { TextField, InputAdornment, IconButton } from '@mui/material';
 import { Search } from '@mui/icons-material';
 import ExploreCard from '../ExploreCard';
+import nft1 from '../icons/nft1.png'
+import nft2 from '../icons/nft2.png'
+import nft3 from '../icons/nft3.png'
 
 export default function ExploreNfts() {
     let desc = 'Lorem ipsum dolor sit amet,  dlkss consetetur It is a long established fact Lorem ipsum dolor sit amet,  dlkss consetetur '
     return (
         <>
-            <div className={`${style.explorePage}`}>
-                <section className={`container`}>
+            <Navbar background = {'#040404'}/>
+
+            <div className={`${style.explorePage} py-md-5`}>
+                <section className={`container pb-md-2`}>
 
                     {/* explore options */}
                     <div className={`row ${style.yellowBorder}`}>
@@ -73,12 +79,26 @@ export default function ExploreNfts() {
                     </div>
 
                     {/* cards */}
-                    <div className={`row mt-md-5 ${style.yellowBorder} justify-content-between`}>
-                        <ExploreCard colSize={3} custom={`ms-md-3`} title={''} desc={desc} copies={''} price={''} img={''} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                    <div className={`row mt-md-4 ${style.yellowBorder} justify-content-around`}>
+                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft2} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+
+                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft3} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+
+                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft1} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+
+                        <div className='w-100'></div>
+
+                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft1} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+
+                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={''} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+
+                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft3} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+
                     </div>
                 </section>
             </div>
 
+            <Footer background = {'#040404'}/>
         </>
     )
 }
