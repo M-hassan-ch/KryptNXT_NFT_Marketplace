@@ -1,0 +1,35 @@
+.blueBorder {
+    border: 3px solid blue;
+}
+
+.redBorder {
+    border: 3px solid red;
+}
+
+.yellowBorder {
+    border: 3px solid yellow;
+}
+
+.viewNftPage {
+    background: #210621;
+}
+
+.nftImg {
+    object-fit: fill;
+    /* Scale the image to cover the container */
+    width: 100%;
+    /* Make the image fill the container width */
+    height: 500px;
+    /* Make the image fill the container height */
+    border-radius: 22px;
+}
+
+.greyColor {
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.textOverflow {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

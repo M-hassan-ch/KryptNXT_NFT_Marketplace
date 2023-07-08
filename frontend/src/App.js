@@ -9,6 +9,7 @@ import {
   Route,
 } from "react-router-dom";
 import ExploreProfiles from './components/pages/ExploreProfiles';
+import ViewNft from './components/pages/ViewNft';
 
 
 function App() {
@@ -33,6 +34,11 @@ function App() {
 
           <Route path="/explore/profiles" element={<React.Fragment>
             <ExploreProfiles />
+          </React.Fragment>}>
+          </Route>
+
+          <Route path="/nft/:id" element={<React.Fragment>
+            <ViewNft />
           </React.Fragment>}>
           </Route>
 
