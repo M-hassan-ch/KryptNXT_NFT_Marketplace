@@ -1,13 +1,13 @@
 .blueBorder {
-    border: 3px solid blue;
+    /* border: 3px solid blue; */
 }
 
 .redBorder {
-    border: 3px solid red;
+    /* border: 3px solid red; */
 }
 
 .yellowBorder {
-    border: 3px solid yellow;
+    /* border: 3px solid yellow; */
 }
 
 .viewNftPage {
@@ -32,4 +32,18 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.btnBuy {
+    width: 100%;
+    color: #390C4F;
+    background: white;
+    border: 1px solid #EB01FF;
+    font-weight: bolder;
+}
+
+.btnBuy:hover {
+    color: white;
+    background: transparent;
+    border: 1px solid white;
 }
