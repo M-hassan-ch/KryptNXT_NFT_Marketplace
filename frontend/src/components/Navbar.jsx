@@ -25,7 +25,7 @@ export default function Navbar(props) {
                   <ul>
                     <li ><Link to="/explore/nfts">Explore</Link></li>
                     <li><Link to="/createNft">Create</Link></li>
-                    <li><Link to="/createNft">MY NFTs</Link></li>
+                    <li><Link to="/profile/1">MY NFTs</Link></li>
                   </ul>
                 </nav>
               </div>
