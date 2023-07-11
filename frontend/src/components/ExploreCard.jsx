@@ -15,7 +15,7 @@ export default function ExploreCard(props) {
                     </div>
 
                     <div className={`col-12 px-md-3 mt-md-3`}>
-                        <h1 className={`${style.nftName} ${style.textOverflow}`}>{props.title ? props.title : 'Pixel Vault'}</h1>
+                        <h1 className={`${style.nftName} ${style.textOverflow}`} style={{fontWeight:'bold', letterSpacing:'1px'}}>{props.title ? props.title : 'Pixel Vault'}</h1>
                         <p className={`${style.greyColor} ${style.yellowBorder} ${style.nftDesc}`}>{props.desc ? props.desc : 'Lorem ipsum dolor sit amet,  dlkss consetetur It is a long established fact'}</p>
                     </div>
 
