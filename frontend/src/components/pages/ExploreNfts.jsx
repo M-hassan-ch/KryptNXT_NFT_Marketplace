@@ -29,9 +29,9 @@ export default function ExploreNfts() {
                             <div className={`${style.activeBar}`}></div>
                         </div>
 
-                        <div className={`col-md-2 ${style.blueBorder}`}>
+                        {/* <div className={`col-md-2 ${style.blueBorder}`}>
                             <Link style={{ color: 'rgb(191, 191, 191)' }} to="/explore/profiles" className={`${style.exploreOptions}`}>Users</Link>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* filters */}

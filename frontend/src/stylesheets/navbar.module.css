@@ -66,6 +66,10 @@ a:hover {
     width: 75%;
 }
 
+.imgLogo:hover {
+    cursor: pointer;
+}
+
 nav ul {
     list-style: none;
     margin: 0;
