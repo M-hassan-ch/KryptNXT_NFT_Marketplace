@@ -115,3 +115,7 @@ th>div {
     font-size: 27px;
     /* padding: 8px; */
 }
+
+body {
+    overflow-x: hidden;
+}

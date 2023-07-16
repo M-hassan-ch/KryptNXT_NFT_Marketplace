@@ -11,6 +11,7 @@ import {
 import ExploreProfiles from './components/pages/ExploreProfiles';
 import ViewNft from './components/pages/ViewNft';
 import Profile from './components/pages/Profile';
+import Settings from './components/pages/Settings';
 
 
 function App() {
@@ -45,6 +46,11 @@ function App() {
 
           <Route path="/nft/:id" element={<React.Fragment>
             <ViewNft />
+          </React.Fragment>}>
+          </Route>
+
+          <Route path="/:userA/settings" element={<React.Fragment>
+            <Settings />
           </React.Fragment>}>
           </Route>
 

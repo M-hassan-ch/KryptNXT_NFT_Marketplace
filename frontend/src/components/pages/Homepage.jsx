@@ -1,13 +1,27 @@
-import React from 'react'
+import React, { useRef, useState, useEffect } from 'react';
+import {
+    Box,
+    // Card,
+    // CardContent,
+    Container,
+    // Typography,
+    IconButton
+} from '@mui/material';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+
+import nft1 from '../icons/nft1.png'
+import nft2 from '../icons/nft2.png'
+import nft3 from '../icons/nft3.png'
+import profileIcon1 from '../icons/profileIcon3.png'
+import profileIcon2 from '../icons/profileIcon2.png'
+import profileIcon3 from '../icons/profileIcon1.png'
+
 import Navbar from '../Navbar'
 import Footer from '../Footer'
 import style from '../../stylesheets/homepage.module.css'
 import welcomeImg from '../icons/welcome.png'
-import profileIcon1 from '../icons/profileIcon3.png'
-import profileIcon2 from '../icons/profileIcon2.png'
-import profileIcon3 from '../icons/profileIcon1.png'
 import Card from '../Card'
-import Carousel from 'react-material-ui-carousel'
+// import Carousel from 'react-material-ui-carousel'
 // import { Paper, Button } from '@mui/material'
 
 
@@ -26,6 +40,32 @@ function PriceCol(props) {
 }
 
 export default function Homepage() {
+
+    const carouselRef = useRef(null);
+
+    const [showBackwardButton, setShowBackwardButton] = useState(false);
+    const [showForwardButton, setShowForwardButton] = useState(true);
+
+    useEffect(() => {
+        carouselRef.current.addEventListener('scroll', handleScroll);
+        return () => {
+            carouselRef.current.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
+    const handleScroll = () => {
+        const scrollLeft = carouselRef.current.scrollLeft;
+        const clientWidth = carouselRef.current.clientWidth;
+
+        setShowBackwardButton(scrollLeft > 0);
+        setShowForwardButton(scrollLeft + clientWidth < carouselRef.current.scrollWidth - 1);
+    };
+
+    const handleSlide = (scrollOffset) => {
+        carouselRef.current.scrollLeft += scrollOffset;
+    };
+
+
     return (
         <>
             <Navbar />
@@ -75,8 +115,8 @@ export default function Homepage() {
 
             {/* explore section */}
             <section className={`container-fluid py-md-5 ${style.exploreSection}`}>
-                <div className={`row ${style.yellowBorder} align-items-center`}>
-                    <div className={`col-md-3 mx-auto ${style.redBorder} `}>
+                <div className={`row align-items-center `}>
+                    <div className={`col-md-3 ms-auto ${style.redBorder} `}>
                         <div>
                             <h1>
                                 Explore NFTs <br />On Our <br /> Marketplace
@@ -95,14 +135,11 @@ export default function Homepage() {
                         </div>
                     </div>
 
-                    <div className={`col-md-8 ms-3 ${style.blueBorder} `}>
+                    <div className={`col-md-8 ms-3 `} >
 
-                        <div className={`row ${style.redBorder} p-0 m-0`}>
-                            {/* <Card></Card>
-                                <Card></Card>
-                                <Card></Card> */}
+                        <div className={`row ${style.redBorder} p-0 m-0`} >
 
-                            <Carousel autoPlay={false} animation={'slide'} indicators={false} swipe={true} cycleNavigation={false} navButtonsAlwaysVisible={true}>
+                            {/* <Carousel autoPlay={false} animation={'slide'} indicators={false} swipe={true} cycleNavigation={false} navButtonsAlwaysVisible={true}>
                                 <div className={`row ${style.redBorder} p-0 m-0`}>
                                     <Card colSize={3}></Card>
                                     <Card colSize={3}></Card>
@@ -112,11 +149,72 @@ export default function Homepage() {
                                 <div className={`row ${style.redBorder} p-0 m-0`}>
                                     <Card colSize={3}></Card>
                                 </div>
+                            </Carousel> */}
 
+                            <Container className='col-12' maxWidth="md" sx={{ position: 'relative' }}>
+                                <Box className={`${style.blueBorder}`} sx={{ display: 'flex', justifyContent: 'center', marginTop: 2, width: '1200px', }}>
 
+                                    {showBackwardButton && (
+                                        <IconButton className='p-3' sx={{
+                                            position: 'absolute',
+                                            top: '45%',
+                                            left: '5%',
+                                            bgcolor: 'rgba(0, 0, 0, 0.5)',
+                                            border: '1px solid grey',
+                                            borderRadius: '30%',
+                                            color: 'white',
+                                            '&:hover': {
+                                                bgcolor: 'black',
+                                                opacity: 0.8,
+                                                border: 'none'
+                                            }
+                                        }} onClick={() => handleSlide(-200)}>
+                                            <ChevronLeft />
+                                        </IconButton>
+                                    )}
 
+                                    <Box className={`${style.yellowBorder}`} sx={{
+                                        display: 'flex',
+                                        overflowX: 'auto',
+                                        scrollBehavior: 'smooth',
+                                        scrollSnapType: 'x mandatory',
+                                        '&::-webkit-scrollbar': {
+                                            display: 'none'
+                                        }
+                                    }}
+                                        ref={carouselRef}>
+                                        <Card colSize={3} img={nft1} custom='me-4'></Card>
+                                        <Card colSize={3} img={nft2} cardColor='#610652' custom='me-4' title={'Street Machine'}></Card>
+                                        <Card colSize={3} img={nft3} title= 'Away Machine' cardColor='#640A60' custom='me-4'></Card>
+                                        <Card colSize={3} img={nft1} custom='me-4'></Card>
+                                        <Card colSize={3} img={nft2} cardColor='#610652' custom='me-4' title={'Street Machine'}></Card>
+                                        <Card colSize={3} img={nft2} cardColor='#610652' custom='me-4' title={'Street Machine'}></Card>
+                                        <Card colSize={3} img={nft2} cardColor='#610652' custom='me-4' title={'Street Machine'}></Card>
 
-                            </Carousel>
+                                        {/* Add more cards as needed */}
+                                    </Box>
+
+                                    {showForwardButton && (
+                                        <IconButton className='p-3' sx={{
+                                            position: 'absolute',
+                                            top: '45%',
+                                            right: '-2%',
+                                            bgcolor: 'rgba(0, 0, 0, 0.5)',
+                                            border: '1px solid grey',
+                                            borderRadius: '30%',
+                                            color: 'white',
+                                            '&:hover': {
+                                                bgcolor: 'black',
+                                                opacity: 0.8,
+                                                border: 'none'
+                                            }
+                                        }} onClick={() => handleSlide(200)}>
+                                            <ChevronRight />
+                                        </IconButton>
+                                    )}
+
+                                </Box>
+                            </Container>
                         </div>
 
                     </div>
