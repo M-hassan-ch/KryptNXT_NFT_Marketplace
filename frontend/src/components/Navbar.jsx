@@ -1,9 +1,16 @@
-import React from 'react'
+import React, { useState, useContext } from "react";
+
 import style from "../stylesheets/navbar.module.css";
 import logo from './icons/logo.png';
 import { Link, useNavigate } from 'react-router-dom'
+import Context from "../context/contractContext";
+import formatAddress from "../utility/shortenAddress.js";
+
 
 export default function Navbar(props) {
+
+  const context = useContext(Context);
+  const contractFunction = context.contractFunction;
 
   const navigate = useNavigate();
 
@@ -41,7 +48,12 @@ export default function Navbar(props) {
           </div>
 
           <div className={`col-md-2 ${style.yellowBorder} mx-auto`}>
-            <button className={`btn ${style.btnLogin}`}>Login</button>
+            <button className={`btn ${style.btnLogin}`} onClick={context.connectWallet}>
+              {
+                context.account.address ? formatAddress(context.account.address) : "Login"
+              }
+
+            </button>
           </div>
         </div>
 

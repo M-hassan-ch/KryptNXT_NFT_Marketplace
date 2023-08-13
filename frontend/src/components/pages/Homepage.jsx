@@ -229,7 +229,7 @@ export default function Homepage() {
                     </div>
 
                     <div className={`col-md-5 ${style.redBorder} `}>
-                        <table class="table">
+                        <table className="table">
                             <thead>
                                 <tr style={{ borderTop: '1px solid white' }}>
                                     <th className={`${style.redBorder}`} scope="col"><div className={`py-md-3`}>Collections</div></th>
@@ -241,7 +241,7 @@ export default function Homepage() {
                                 <tr >
                                     <td className={`${style.yellowBorder}`} style={{ verticalAlign: "top" }}>
                                         <div className={`${style.redBorder} mt-md-3`} style={{ display: "flex", justifyContent: "left", alignItems: "center" }}>
-                                            <img src={profileIcon1} alt="" srcset="" /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Perdgy Penguizs</span>
+                                            <img src={profileIcon1} alt="" /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Perdgy Penguizs</span>
                                         </div>
                                     </td>
 
@@ -260,7 +260,7 @@ export default function Homepage() {
                                 <tr >
                                     <td className={`${style.yellowBorder}`} style={{ verticalAlign: "top" }}>
                                         <div className={`${style.redBorder} mt-md-3`} style={{ display: "flex", justifyContent: "left", alignItems: "center" }}>
-                                            <img src={profileIcon2} alt="" srcset="" /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Azuki</span>
+                                            <img src={profileIcon2} alt=""  /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Azuki</span>
                                         </div>
                                     </td>
 
@@ -279,7 +279,7 @@ export default function Homepage() {
                                 <tr >
                                     <td className={`${style.yellowBorder}`} style={{ verticalAlign: "top" }}>
                                         <div className={`${style.redBorder} mt-md-3`} style={{ display: "flex", justifyContent: "left", alignItems: "center" }}>
-                                            <img src={profileIcon3} alt="" srcset="" /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Otherdeed For Otherside</span>
+                                            <img src={profileIcon3} alt=""  /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Otherdeed For Otherside</span>
                                         </div>
                                     </td>
 
@@ -300,7 +300,7 @@ export default function Homepage() {
                     </div>
 
                     <div className={`col-md-5 ${style.redBorder} `}>
-                        <table class="table">
+                        <table className="table">
                             <thead>
                                 <tr style={{ borderTop: '1px solid white' }}>
                                     <th className={`${style.redBorder}`} scope="col"><div className={`py-md-3`}>Collections</div></th>
@@ -312,7 +312,7 @@ export default function Homepage() {
                                 <tr >
                                     <td className={`${style.yellowBorder}`} style={{ verticalAlign: "top" }}>
                                         <div className={`${style.redBorder} mt-md-2`} style={{ display: "flex", justifyContent: "left", alignItems: "center" }}>
-                                            <img src={profileIcon1} alt="" srcset="" /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Perdgy Penguizs</span>
+                                            <img src={profileIcon1} alt=""  /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Perdgy Penguizs</span>
                                         </div>
                                     </td>
 
@@ -331,7 +331,7 @@ export default function Homepage() {
                                 <tr >
                                     <td className={`${style.yellowBorder}`} style={{ verticalAlign: "top" }}>
                                         <div className={`${style.redBorder} mt-md-2`} style={{ display: "flex", justifyContent: "left", alignItems: "center" }}>
-                                            <img src={profileIcon2} alt="" srcset="" /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Azuki</span>
+                                            <img src={profileIcon2} alt=""  /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Azuki</span>
                                         </div>
                                     </td>
 
@@ -350,7 +350,7 @@ export default function Homepage() {
                                 <tr >
                                     <td className={`${style.yellowBorder}`} style={{ verticalAlign: "top" }}>
                                         <div className={`${style.redBorder} mt-md-2`} style={{ display: "flex", justifyContent: "left", alignItems: "center" }}>
-                                            <img src={profileIcon3} alt="" srcset="" /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Otherdeed For Otherside</span>
+                                            <img src={profileIcon3} alt=""  /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Otherdeed For Otherside</span>
                                         </div>
                                     </td>
 
