@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import style from '../../stylesheets/setting.module.css'
 import Footer from '../Footer'
 import Navbar from '../Navbar'
@@ -13,10 +13,12 @@ import { useParams } from "react-router-dom";
 // import polygonIcon from '../icons/polygonIcon.png'
 import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
+// import { Typography } from '@mui/material';
+import ManageAccountsTwoToneIcon from '@mui/icons-material/ManageAccountsTwoTone';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
-console.log("iam tab panel");
+    console.log("iam tab panel");
     return (
         <div
             role="tabpanel"
@@ -27,9 +29,9 @@ console.log("iam tab panel");
             {...other}
         >
             {(
-                <div>
-                    <h1>Hello World</h1>
-                </div>
+
+                <div>{children}</div>
+
             )}
         </div>
     );
@@ -110,11 +112,11 @@ export default function Settings() {
             <Navbar></Navbar>
 
             <section className={`container-fluid`} style={{ border: '2px solid white', height: '1000%' }}>
-                <div className={`row`} style={{ border: '5px solid red', height: '100%' }}>
-                    <div className={`col-12`}>
+                <div className={`row `} style={{ border: '5px solid red', height: '100%' }}>
+                    <div className={`col-12 p-0`}>
                         <Box
-                            className='px-5 p-0 m-0'
-                            sx={{ flexGrow: 1, bgcolor: 'transparent', display: 'flex', height: '100%', border: '2px solid orange' }}
+                            className=''
+                            sx={{ flexGrow: 1, bgcolor: 'transparent', display: 'flex', height: '100%', border: '5px solid orange' }}
                         >
                             <Tabs
                                 orientation="vertical"
@@ -122,10 +124,11 @@ export default function Settings() {
                                 value={value}
                                 onChange={handleChange}
                                 aria-label="Vertical tabs example"
-                                sx={{ borderRight: 1, borderColor: 'divider', background: 'rgba(49, 8, 49, 0.85)', border: '2px solid pink' }}
+                                sx={{ borderRight: 1, borderColor: 'divider', background: 'rgba(49, 8, 49, 0.85)', }}
+                                className='pe-4'
 
                             >
-                                <h1>Hello</h1>
+                                <h1 style={{textAlign:'center', border: '5px solid red'}}> <ManageAccountsTwoToneIcon className='m-2' sx={{width: '40px', height: '40px'}}/>Hello</h1>
 
                                 <Tab label="Item One" {...a11yProps(0)} sx={{
                                     color: value === 0 ? 'green' : 'pink',
@@ -139,119 +142,112 @@ export default function Settings() {
                                 {/* <Tab label="Item Two" {...a11yProps(1)} />
                                 <Tab label="Item Three" {...a11yProps(2)} /> */}
                             </Tabs>
-                            <TabPanel value={value} index={0}>
-                                <form className={`row p-5 ${style.formBackground} ${style.yellowBorder}`}>
+                            <TabPanel value={value} index={0}
+                                children={
+                                    <form className={`row m-4 p-5 ${style.formBackground} ${style.yellowBorder}`}>
 
-                                    <div className={`col-12 ${style.redBorder}`}>
-                                        <p className={`${style.formLabel}`}>Name</p>
-                                    </div>
-                                    <div className={`col-5 ${style.redBorder}`}>
-                                        <input type="text" className={` py-3 w-100 px-3 ${style.inputField}`} placeholder="Name" id='name' value={title}
-                                            onChange={(event) => setTitle(event.target.value)} />
-                                    </div>
+                                        <div className={`col-12 ${style.redBorder}`}>
+                                            <p className={`${style.formLabel}`}>Name</p>
+                                        </div>
+                                        <div className={`col-5 ${style.redBorder}`}>
+                                            <input type="text" className={` py-3 w-100 px-3 ${style.inputField}`} placeholder="Name" id='name' value={title}
+                                                onChange={(event) => setTitle(event.target.value)} />
+                                        </div>
 
-                                    <div className={`col-12 mt-md-4 ${style.redBorder}`}>
-                                        <p className={`${style.formLabel}`}>Description</p>
-                                    </div>
-                                    <div className={`col-5 ${style.redBorder}`}>
-                                        <textarea className={` py-3 w-100 px-3 ${style.inputField}`}
-                                            rows={4} // Specify the number of visible rows
-                                            placeholder="Description" id='description' value={desc}
-                                            onChange={(event) => setDesc(event.target.value)}
-                                        />
-                                    </div>
-
-                                    <div className={`col-12 mt-md-4 ${style.redBorder}`}>
-                                        <p className={`${style.formLabel}`}>Price</p>
-                                    </div>
-                                    <div className={`col-md-5 ${style.redBorder}`}>
-
-                                        <OutlinedInput
-                                            id="outlined-adornment-weight"
-                                            endAdornment={<InputAdornment position="end" className={`${style.greyColor}`} >MATIC</InputAdornment>}
-                                            aria-describedby="outlined-weight-helper-text"
-                                            inputProps={{
-                                                'aria-label': 'weight',
-                                            }}
-                                            placeholder={'sds'}
-                                            sx={{ color: 'white', borderRadius: '12px' }}
-                                            className={` py-1 w-100 px-3 ${style.inputField}`}
-                                            value={price}
-                                            onChange={(event) => setPrice(event.target.value)}
-                                        />
-
-                                        {/* <input type="text" className={` py-3 w-100 px-3 ${style.inputField}`} placeholder="Price" id='price' /> */}
-                                    </div>
-
-                                    <div className={`col-12 mt-md-4 ${style.redBorder}`}>
-                                        <p className={`${style.formLabel}`}>Uplaod File</p>
-                                    </div>
-                                    <div className={`col-md-5 ${style.redBorder}`}>
-                                        <div
-                                            className={`${style.blue} ${style.inputField} ${style.file} ${dragging ? 'dragging' : ''}`}
-                                            onDragEnter={handleDragEnter}
-                                            onDragLeave={handleDragLeave}
-                                            onDragOver={handleDragOver}
-                                            onDrop={handleDrop}
-                                        >
-                                            {/* <p>Drag and drop files here</p> */}
-                                            <input
-                                                type="file"
-                                                id="file-upload"
-                                                // multiple
-                                                onChange={handleImageUpload}
-                                                className='py-md-4 '
-                                                style={{ borderRadius: '50px' }}
+                                        <div className={`col-12 mt-md-4 ${style.redBorder}`}>
+                                            <p className={`${style.formLabel}`}>Description</p>
+                                        </div>
+                                        <div className={`col-5 ${style.redBorder}`}>
+                                            <textarea className={` py-3 w-100 px-3 ${style.inputField}`}
+                                                rows={4} // Specify the number of visible rows
+                                                placeholder="Description" id='description' value={desc}
+                                                onChange={(event) => setDesc(event.target.value)}
                                             />
                                         </div>
-                                    </div>
 
-                                    <div className={`col-12 mt-md-4 ${style.redBorder}`}>
-                                        <p className={`${style.formLabel}`}>Copies</p>
-                                    </div>
-                                    <div className={`col-md-4 ${style.redBorder}`}>
-                                        <input type="text" className={` py-3 w-100 px-3 ${style.inputField}`} placeholder="Copies" id='copies' value={copies}
-                                            onChange={(event) => setCopies(event.target.value)} />
-                                    </div>
+                                        <div className={`col-12 mt-md-4 ${style.redBorder}`}>
+                                            <p className={`${style.formLabel}`}>Price</p>
+                                        </div>
+                                        <div className={`col-md-5 ${style.redBorder}`}>
+
+                                            <OutlinedInput
+                                                id="outlined-adornment-weight"
+                                                endAdornment={<InputAdornment position="end" className={`${style.greyColor}`} >MATIC</InputAdornment>}
+                                                aria-describedby="outlined-weight-helper-text"
+                                                inputProps={{
+                                                    'aria-label': 'weight',
+                                                }}
+                                                placeholder={'sds'}
+                                                sx={{ color: 'white', borderRadius: '12px' }}
+                                                className={` py-1 w-100 px-3 ${style.inputField}`}
+                                                value={price}
+                                                onChange={(event) => setPrice(event.target.value)}
+                                            />
+
+                                            {/* <input type="text" className={` py-3 w-100 px-3 ${style.inputField}`} placeholder="Price" id='price' /> */}
+                                        </div>
+
+                                        <div className={`col-12 mt-md-4 ${style.redBorder}`}>
+                                            <p className={`${style.formLabel}`}>Uplaod File</p>
+                                        </div>
+                                        <div className={`col-md-5 ${style.redBorder}`}>
+                                            <div
+                                                className={`${style.blue} ${style.inputField} ${style.file} ${dragging ? 'dragging' : ''}`}
+                                                onDragEnter={handleDragEnter}
+                                                onDragLeave={handleDragLeave}
+                                                onDragOver={handleDragOver}
+                                                onDrop={handleDrop}
+                                            >
+                                                {/* <p>Drag and drop files here</p> */}
+                                                <input
+                                                    type="file"
+                                                    id="file-upload"
+                                                    // multiple
+                                                    onChange={handleImageUpload}
+                                                    className='py-md-4 '
+                                                    style={{ borderRadius: '50px' }}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className={`col-12 mt-md-4 ${style.redBorder}`}>
+                                            <p className={`${style.formLabel}`}>Copies</p>
+                                        </div>
+                                        <div className={`col-md-4 ${style.redBorder}`}>
+                                            <input type="text" className={` py-3 w-100 px-3 ${style.inputField}`} placeholder="Copies" id='copies' value={copies}
+                                                onChange={(event) => setCopies(event.target.value)} />
+                                        </div>
 
 
-                                    <div className={`col-12 mt-md-4 ${style.redBorder}`}>
-                                        <p className={`${style.formLabel}`}>Royalties</p>
-                                    </div>
-                                    <div className={`col-md-4 ${style.redBorder}`}>
+                                        <div className={`col-12 mt-md-4 ${style.redBorder}`}>
+                                            <p className={`${style.formLabel}`}>Royalties</p>
+                                        </div>
+                                        <div className={`col-md-4 ${style.redBorder}`}>
 
-                                        <OutlinedInput
-                                            id="outlined-adornment-weight"
-                                            endAdornment={<InputAdornment position="end" sx={{ fontSize: '30rem' }} >%</InputAdornment>}
-                                            aria-describedby="outlined-weight-helper-text"
-                                            inputProps={{
-                                                'aria-label': 'weight',
-                                            }}
-                                            placeholder={'Royalties'}
-                                            sx={{ color: 'white', borderRadius: '12px' }}
-                                            className={` py-1 w-100 px-3 ${style.inputField}`}
-                                        />
+                                            <OutlinedInput
+                                                id="outlined-adornment-weight"
+                                                endAdornment={<InputAdornment position="end" sx={{ fontSize: '30rem' }} >%</InputAdornment>}
+                                                aria-describedby="outlined-weight-helper-text"
+                                                inputProps={{
+                                                    'aria-label': 'weight',
+                                                }}
+                                                placeholder={'Royalties'}
+                                                sx={{ color: 'white', borderRadius: '12px' }}
+                                                className={` py-1 w-100 px-3 ${style.inputField}`}
+                                            />
 
-                                    </div>
+                                        </div>
 
-                                    <div className="w-100"></div>
+                                        <div className="w-100"></div>
 
-                                    <div className={`col-md-4 mt-md-5 ${style.redBorder}`}>
-                                        <button className={`btn px-md-5 py-md-2 ${style.btnCreateNft}`}>See More</button>
-                                    </div>
+                                        <div className={`col-md-4 mt-md-5 ${style.redBorder}`}>
+                                            <button className={`btn px-md-5 py-md-2 ${style.btnCreateNft}`}>See More</button>
+                                        </div>
 
-                                </form>
+                                    </form>}>
+
                             </TabPanel>
-                            {/* <TabPanel value={value} index={1}>
-                                <section className={`${style.yellowBorder}`} style={{ background: 'pink', height: '200px', width: '100%' }}>
-                                    Item sajasnjnajdnsajdnasjkasdsadsadassdsa
-                                </section>
-                            </TabPanel>
-                            <TabPanel value={value} index={2}>
-                                <section className={`${style.yellowBorder}`} style={{ background: 'pink', height: '200px', width: '100%' }}>
-                                    Item sajasnjnajdnsajdnasjkasdsadsadassdsa
-                                </section>
-                            </TabPanel> */}
+
                         </Box>
                     </div>
                 </div>
