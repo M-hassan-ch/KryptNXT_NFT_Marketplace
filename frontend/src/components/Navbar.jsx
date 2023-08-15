@@ -6,17 +6,55 @@ import { Link, useNavigate } from 'react-router-dom'
 import Context from "../context/contractContext";
 import formatAddress from "../utility/shortenAddress.js";
 
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export default function Navbar(props) {
 
   const context = useContext(Context);
   const contractFunction = context.contractFunction;
 
+  const [open, setOpen] = React.useState(false);
+
+  const [state, setState] = React.useState({
+    vertical: 'top',
+    horizontal: 'center',
+  });
+  const { vertical, horizontal } = state;
+
+  const handleClick = (event) => {
+    event.preventDefault();
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   const navigate = useNavigate();
 
   const navigate_homePage = () => {
     console.log('iam clicked');
     navigate('/', {});
+  }
+
+  const navigateTo = (endPoint) => {
+    if (context.account.address) {
+      console.log('iam called');
+      navigate(`${endPoint}`, {});
+    }
+    else {
+      setOpen(true);
+    }
   }
 
   return (
@@ -38,9 +76,20 @@ export default function Navbar(props) {
               <div className={`col-md-5 ${style.blueBorder} p-0`}>
                 <nav>
                   <ul>
-                    <li ><Link to="/explore/nfts">Explore</Link></li>
-                    <li><Link to="/createNft">Create</Link></li>
-                    <li><Link to="/profile/1">MY NFTs</Link></li>
+
+                    <Snackbar open={open} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical, horizontal }}>
+                      <Alert severity="error" onClose={handleClose} sx={{ width: '100%' }}>
+                        Please connect your wallet first!
+                      </Alert>
+                    </Snackbar>
+
+                    <li ><Link to = "/explore/nfts">Explore</Link></li>
+                    <li ><a onClick={() => navigateTo("/createNft")}>Create</a></li>
+                    <li ><a onClick={() => navigateTo("/profile/1")}>MY NFTs</a></li>
+                    
+                    {/* <li ><Link to="/explore/nfts">Explore</Link></li> */}
+                    {/* <li><a to="/createNft">Create</a></li> */}
+                    {/* <li><a to="/profile/1">MY NFTs</a></li> */}
                   </ul>
                 </nav>
               </div>

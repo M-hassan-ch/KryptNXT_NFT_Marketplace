@@ -18,8 +18,9 @@ import { ContractState } from './context/contractState';
 function App() {
   return (
     <>
-      <ContractState>
-        <BrowserRouter>
+
+      <BrowserRouter>
+        <ContractState>
           <Routes>
             <Route path="/" element={<React.Fragment>
               <Homepage />
@@ -57,8 +58,9 @@ function App() {
             </Route>
 
           </Routes>
-        </BrowserRouter>
-      </ContractState>
+        </ContractState>
+      </BrowserRouter>
+
     </>
   );
 }

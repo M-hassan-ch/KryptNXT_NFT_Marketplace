@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import style from '../../stylesheets/profile.module.css'
 import coverPic from '../icons/coverPic.png'
 import profilePic from '../icons/profilePic.png'
@@ -67,6 +67,7 @@ export default function Profile() {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
 
     return (
         <>

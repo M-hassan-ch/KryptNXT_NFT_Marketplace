@@ -5,6 +5,8 @@ import shotenAddress from '../utility/shortenAddress'
 import { useState } from 'react';
 import { useEffect } from 'react';
 
+import { Link, useNavigate } from 'react-router-dom'
+
 const ethers = require('ethers');
 
 
@@ -14,6 +16,16 @@ let ContractState = (props) => {
     const [Provider, setProvider] = useState({ provider: null, signer: null });
 
     const contractAddress = '0x87Bfdc938124DaA87130981a08673c7c2CD91f5d';
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // console.log('iam clicked');
+        if (account.address === null){
+            navigate('/', {});
+        }
+    }, [account.address])
+
 
     window.ethereum.on('accountsChanged', async function (accounts) {
         if (Provider.provider) {
@@ -53,8 +65,6 @@ let ContractState = (props) => {
             console.log("error while connecting with web3 provider");
             console.log(error);
         }
-
-
     }
 
     const contractFunction = {
