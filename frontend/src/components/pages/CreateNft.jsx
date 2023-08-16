@@ -8,6 +8,9 @@ import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Card from '../Card'
 
+import axios from "axios";
+import { useForm } from "react-hook-form";
+
 export default function CreateNft() {
     const [dragging, setDragging] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
@@ -16,6 +19,122 @@ export default function CreateNft() {
     const [desc, setDesc] = useState('');
     const [copies, setCopies] = useState('');
     const [price, setPrice] = useState('');
+
+    const [FileHash, setFileHash] = useState(null);
+    const [MetaDataHash, setMetaDataHash] = useState(null);
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
+
+    const sendFileToIPFS = async (data, fileName) => {
+        try {
+            const formData = new FormData();
+            formData.append("file", data, fileName);
+
+            console.log("sending file to IPFS..........");
+            const resFile = await axios({
+                method: "post",
+                url: "https://api.pinata.cloud/pinning/pinFileToIPFS", //pinJSONToIPFS
+                data: formData,
+                headers: {
+                    pinata_api_key: `5118d12a0f3128be332d`, //${process.env.REACT_APP_PINATA_API_KEY}
+                    pinata_secret_api_key: `8660c87818cb1522c2c08d141ed393eeff441cad866f34da9775816bbdbbd809`, //${process.env.REACT_APP_PINATA_API_SECRET}
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            if (resFile) {
+                // const ImgHash = `https://ipfs.io/ipfs/${resFile.data.IpfsHash}`;
+                setFileHash(resFile.data.IpfsHash);
+                console.log("File successfully sent to IPFS", resFile.data.IpfsHash);
+                return resFile.data.IpfsHash;
+            }
+        } catch (error) {
+            alert("Error sending File to IPFS: ");
+            console.log("Error sending File to IPFS: ");
+            console.log(error);
+        }
+    };
+
+    const sendMetaDataToIPFS = async (filehash) => {
+        try {
+            if (filehash) {
+                const metaData = JSON.stringify({
+                    name: document.getElementById("name").value,
+                    description: document.getElementById("desc").value,
+                    data: filehash,
+                });
+
+                console.log("sending json to IPFS..........");
+                const resFile = await axios({
+                    method: "post",
+                    url: "https://api.pinata.cloud/pinning/pinJSONToIPFS", //pinFileToIPFS
+                    data: metaData,
+                    headers: {
+                        pinata_api_key: `5118d12a0f3128be332d`, //${process.env.REACT_APP_PINATA_API_KEY}
+                        pinata_secret_api_key: `8660c87818cb1522c2c08d141ed393eeff441cad866f34da9775816bbdbbd809`, //${process.env.REACT_APP_PINATA_API_SECRET}
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                if (resFile) {
+                    console.log("Metadata hash", resFile.data.IpfsHash);
+                    setMetaDataHash(resFile.data.IpfsHash);
+                    return resFile.data.IpfsHash;
+                }
+            } else {
+                alert("Error. null file hash ");
+                console.log("Error. null file hash");
+            }
+        } catch (error) {
+            alert("Error sending json to IPFS: ");
+            console.log("Error sending json to IPFS: ");
+            console.log(error);
+        }
+    };
+
+    async function uploadDataToIPFS() {
+        const responseFuncOne = await sendFileToIPFS(selectedImage, selectedImage.name);
+        if (responseFuncOne) {
+            setFileHash(responseFuncOne);
+            const responseFuncTwo = await sendMetaDataToIPFS(responseFuncOne);
+            if (responseFuncTwo) {
+                setMetaDataHash(responseFuncTwo);
+                return responseFuncTwo;
+            }
+        }
+    }
+
+    const onSubmit = () => {
+        const copies = document.getElementById("copies").value;
+
+        try {
+            if (parseInt(copies) <= 0) {
+                alert("copies should be greater than zero");
+            } else {
+                mintNft();
+            }
+        } catch (error) {
+            alert("Error while parsing the inputs");
+            console.log(error);
+        }
+    };
+
+    const mintNft = async () => {
+        try {
+            let metaHash = await uploadDataToIPFS();
+
+            if (metaHash) {
+                console.log("Metadata Hash!", metaHash);
+            }
+        } catch (error) {
+            alert('Exception thrown while calling mint nft function');
+            console.log(error);
+        }
+    };
 
     const handleDragEnter = (event) => {
         event.preventDefault();
@@ -45,7 +164,8 @@ export default function CreateNft() {
         const reader = new FileReader();
 
         reader.onload = () => {
-            setSelectedImage(reader.result);
+            console.log("File uploaded");
+            setSelectedImage(file);
         };
 
         if (file) {
@@ -101,7 +221,7 @@ export default function CreateNft() {
 
                                     </div>
 
-                                    <form className={`row mt-md-5 ${style.yellowBorder}`}>
+                                    <form className={`row mt-md-5 ${style.yellowBorder}`} onSubmit={handleSubmit(onSubmit)}>
 
                                         <div className={`col-12 ${style.redBorder}`}>
                                             <p className={`${style.formLabel}`}>Name</p>
@@ -117,12 +237,12 @@ export default function CreateNft() {
                                         <div className={`col-12 ${style.redBorder}`}>
                                             <textarea className={` py-3 w-100 px-3 ${style.inputField}`}
                                                 rows={4} // Specify the number of visible rows
-                                                placeholder="Description" id='description' value={desc}
+                                                placeholder="Description" id='desc' value={desc}
                                                 onChange={(event) => setDesc(event.target.value)}
                                             />
                                         </div>
 
-                                        <div className={`col-12 mt-md-4 ${style.redBorder}`}>
+                                        {/* <div className={`col-12 mt-md-4 ${style.redBorder}`}>
                                             <p className={`${style.formLabel}`}>Price</p>
                                         </div>
                                         <div className={`col-12 ${style.redBorder}`}>
@@ -141,8 +261,8 @@ export default function CreateNft() {
                                                 onChange={(event) => setPrice(event.target.value)}
                                             />
 
-                                            {/* <input type="text" className={` py-3 w-100 px-3 ${style.inputField}`} placeholder="Price" id='price' /> */}
-                                        </div>
+                                            {/* <input type="text" className={` py-3 w-100 px-3 ${style.inputField}`} placeholder="Price" id='price' /> // comment end
+                                        </div>  */}
 
                                         <div className={`col-12 mt-md-4 ${style.redBorder}`}>
                                             <p className={`${style.formLabel}`}>Uplaod File</p>
@@ -176,11 +296,10 @@ export default function CreateNft() {
                                         </div>
 
 
-                                        <div className={`col-12 mt-md-4 ${style.redBorder}`}>
+                                        { /* <div className={`col-12 mt-md-4 ${style.redBorder}`}>
                                             <p className={`${style.formLabel}`}>Royalties</p>
                                         </div>
                                         <div className={`col-12 ${style.redBorder}`}>
-
                                             <OutlinedInput
                                                 id="outlined-adornment-weight"
                                                 endAdornment={<InputAdornment position="end" sx={{ fontSize: '30rem' }} >%</InputAdornment>}
@@ -192,11 +311,10 @@ export default function CreateNft() {
                                                 sx={{ color: 'white', borderRadius: '12px' }}
                                                 className={` py-1 w-100 px-3 ${style.inputField}`}
                                             />
-
-                                        </div>
+                                        </div> */ }
 
                                         <div className={`col-12 mt-md-5 ${style.redBorder}`}>
-                                            <button className={`btn px-md-5 py-md-2 ${style.btnCreateNft}`}>See More</button>
+                                            <button className={`btn px-md-5 py-md-2 ${style.btnCreateNft}`} type="submit">Create</button>
                                         </div>
 
                                     </form>
