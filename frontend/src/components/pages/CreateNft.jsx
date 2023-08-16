@@ -11,6 +11,13 @@ import Card from '../Card'
 import axios from "axios";
 import { useForm } from "react-hook-form";
 
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 export default function CreateNft() {
     const [dragging, setDragging] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
@@ -22,6 +29,13 @@ export default function CreateNft() {
 
     const [FileHash, setFileHash] = useState(null);
     const [MetaDataHash, setMetaDataHash] = useState(null);
+
+    const [FormValidationError, setFormValidationError] = useState({ open: false, msg: '' });
+    const [state, setState] = React.useState({
+        vertical: 'top',
+        horizontal: 'center',
+    });
+    const { vertical, horizontal } = state;
 
     const {
         register,
@@ -125,14 +139,35 @@ export default function CreateNft() {
 
     const mintNft = async () => {
         try {
-            let metaHash = await uploadDataToIPFS();
+            if (parseInt(copies) <= 0) {
+                setFormValidationError({ open: true, msg: "Invalid number of copies" });
+            } else if (title == "") {
+                setFormValidationError({ open: true, msg: "Title cannot be empty" });
+            }
+            else if (desc == "") {
+                setFormValidationError({ open: true, msg: "Description cannot be empty" });
+            }
+            else if (selectedImage == null) {
+                setFormValidationError({ open: true, msg: "No file uploaded" });
+            }
+            else {
+                console.log("fine");
+                // try {
+                //     let metaHash = await uploadDataToIPFS();
 
-            if (metaHash) {
-                console.log("Metadata Hash!", metaHash);
+                //     if (metaHash) {
+                //         console.log("Metadata Hash!", metaHash);
+                //     }
+                // } catch (error) {
+                //     console.log('Exception thrown while calling mint nft function');
+                //     console.log(error);
+                // }
             }
         } catch (error) {
-            alert('Exception thrown while calling mint nft function');
+            console.log("Error while calling minNft()");
             console.log(error);
+            setFormValidationError({ open: true, msg: "Something went wrong" });
+            // Handle the error here, such as returning a default value or showing an error message to the user.
         }
     };
 
@@ -173,6 +208,13 @@ export default function CreateNft() {
         }
     };
 
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setFormValidationError({ open: false, msg: "" });
+    };
+
     // const handleFileInput = (event) => {
     //     const files = Array.from(event.target.files);
     //     console.log(files);
@@ -190,6 +232,13 @@ export default function CreateNft() {
                         <div className={`col-12`}>
                             <div className={`row justify-content-around align-items-center`}>
                                 <div className={`col-md-5 ${style.blueBorder}`}>
+
+                                    <Snackbar open={FormValidationError.open} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical, horizontal }}>
+                                        <Alert severity="error" onClose={handleClose} sx={{ width: '100%' }}>
+                                            {`${FormValidationError.msg}!`}
+                                        </Alert>
+                                    </Snackbar>
+
                                     <div className={`row ${style.yellowBorder}`}>
                                         <div className={`col-md-12 mt-md-4 ${style.redBorder}`} style={{ fontSize: "57px", fontWeight: 'bold' }}>
                                             <h1>Create New NFT</h1>
@@ -291,7 +340,7 @@ export default function CreateNft() {
                                             <p className={`${style.formLabel}`}>Copies</p>
                                         </div>
                                         <div className={`col-12 ${style.redBorder}`}>
-                                            <input type="text" className={` py-3 w-100 px-3 ${style.inputField}`} placeholder="Copies" id='copies' value={copies}
+                                            <input type="number" className={` py-3 w-100 px-3 ${style.inputField}`} placeholder="Copies" id='copies' value={copies} min={0}
                                                 onChange={(event) => setCopies(event.target.value)} />
                                         </div>
 
