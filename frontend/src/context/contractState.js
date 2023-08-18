@@ -91,6 +91,7 @@ let ContractState = (props) => {
             if (_contract) {
                 const res = await _contract.minNFT(uri, copies);
                 console.log("Token Minted \n", res);
+                return res;
             }
         } catch (error) {
             // // alert('error while minting token');

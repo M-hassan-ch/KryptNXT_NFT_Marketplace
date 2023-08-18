@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import Context from "../../context/contractContext";
 import Navbar from '../Navbar'
 import Footer from '../Footer'
 import style from '../../stylesheets/createNft.module.css'
@@ -20,6 +21,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 export default function CreateNft() {
+    const context = useContext(Context);
     const [dragging, setDragging] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
 
@@ -162,14 +164,25 @@ export default function CreateNft() {
                     if (metaHash) {
                         console.log("Metadata Hash!", metaHash);
 
-                        contractFunction.mint(metaHash, parseInt(copies)).then(() => {
-                            setTimeout(() => {
-                                setFileHash(null);
-                                setMetaDataHash(null);
-                                setIsLoading(false);
-                                setOpenSuccessMsg(true);
-                            }, 3000);
-                        });
+                        // context.contractFunction.mint(metaHash, parseInt(copies)).then(() => {
+                        //     setTimeout(() => {
+                        //         setFileHash(null);
+                        //         setMetaDataHash(null);
+                        //         setIsLoading(false);
+                        //         setOpenSuccessMsg(true);
+                        //     }, 3000);
+                        // });
+
+                        const receipt = await context.contractFunction.mint(metaHash, parseInt(copies));
+                        const txReceipt = await context.Provider.provider.waitForTransaction(receipt.hash);
+                        // console.log(receipt.hash);
+
+                        if (txReceipt) {
+                            setFileHash(null);
+                            setMetaDataHash(null);
+                            setIsLoading(false);
+                            setOpenSuccessMsg(true);
+                        }
                     }
                 } catch (error) {
                     console.log('Exception thrown while calling mint nft function');
