@@ -6,6 +6,7 @@ import polygonIcon from '../icons/polygonIcon.png'
 import InputAdornment from '@mui/material/InputAdornment';
 // import { OutlinedInput, InputAdornment, createTheme, ThemeProvider } from '@mui/material';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import CircularProgress from '@mui/material/CircularProgress';
 import Card from '../Card'
 
 import axios from "axios";
@@ -26,6 +27,8 @@ export default function CreateNft() {
     const [desc, setDesc] = useState('');
     const [copies, setCopies] = useState('');
     const [price, setPrice] = useState('');
+    const [IsLoading, setIsLoading] = useState(false);
+    const [OpenSuccessMsg, setOpenSuccessMsg] = useState(false);
 
     const [FileHash, setFileHash] = useState(null);
     const [MetaDataHash, setMetaDataHash] = useState(null);
@@ -152,21 +155,33 @@ export default function CreateNft() {
             }
             else {
                 console.log("fine");
-                // try {
-                //     let metaHash = await uploadDataToIPFS();
+                try {
+                    setIsLoading(true);
+                    let metaHash = await uploadDataToIPFS();
 
-                //     if (metaHash) {
-                //         console.log("Metadata Hash!", metaHash);
-                //     }
-                // } catch (error) {
-                //     console.log('Exception thrown while calling mint nft function');
-                //     console.log(error);
-                // }
+                    if (metaHash) {
+                        console.log("Metadata Hash!", metaHash);
+
+                        contractFunction.mint(metaHash, parseInt(copies)).then(() => {
+                            setTimeout(() => {
+                                setFileHash(null);
+                                setMetaDataHash(null);
+                                setIsLoading(false);
+                                setOpenSuccessMsg(true);
+                            }, 3000);
+                        });
+                    }
+                } catch (error) {
+                    console.log('Exception thrown while calling mint nft function');
+                    console.log(error);
+                    setIsLoading(false);
+                }
             }
         } catch (error) {
             console.log("Error while calling minNft()");
             console.log(error);
             setFormValidationError({ open: true, msg: "Something went wrong" });
+            setIsLoading(false);
             // Handle the error here, such as returning a default value or showing an error message to the user.
         }
     };
@@ -215,6 +230,13 @@ export default function CreateNft() {
         setFormValidationError({ open: false, msg: "" });
     };
 
+    const handleSuccessMsgClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenSuccessMsg(false);
+    };
+
     // const handleFileInput = (event) => {
     //     const files = Array.from(event.target.files);
     //     console.log(files);
@@ -236,6 +258,12 @@ export default function CreateNft() {
                                     <Snackbar open={FormValidationError.open} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical, horizontal }}>
                                         <Alert severity="error" onClose={handleClose} sx={{ width: '100%' }}>
                                             {`${FormValidationError.msg}!`}
+                                        </Alert>
+                                    </Snackbar>
+
+                                    <Snackbar open={OpenSuccessMsg} autoHideDuration={2000} onClose={handleSuccessMsgClose} anchorOrigin={{ vertical, horizontal }}>
+                                        <Alert severity="success" onClose={handleClose} sx={{ width: '100%' }}>
+                                            NFT minted successfully!
                                         </Alert>
                                     </Snackbar>
 
@@ -363,7 +391,13 @@ export default function CreateNft() {
                                         </div> */ }
 
                                         <div className={`col-12 mt-md-5 ${style.redBorder}`}>
-                                            <button className={`btn px-md-5 py-md-2 ${style.btnCreateNft}`} type="submit">Create</button>
+
+                                            <button className={`btn px-md-5 py-md-2 ${style.btnCreateNft}`} type="submit" disabled={IsLoading}>
+                                                {
+                                                    IsLoading ? <CircularProgress color="secondary" /> : "Create"
+                                                }
+                                            </button>
+
                                         </div>
 
                                     </form>
