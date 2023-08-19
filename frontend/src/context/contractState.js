@@ -37,7 +37,7 @@ let ContractState = (props) => {
                 const _signer = await Provider.provider.getSigner();
                 let _accAddress = await _signer.getAddress();
                 //_accAddress = shortenAddress(_accAddress);
-                // let _accBalance = ethers.utils.formatEther(await _signer.getBalance());
+                // let _accBalance = ethers.formatEther(await _signer.getBalance());
                 // _accBalance = _accBalance.match(/^-?\d+(?:\.\d{0,2})?/)[0];
                 let _accBalance = 0;
                 setAcc({ address: _accAddress, balance: _accBalance });
@@ -59,7 +59,7 @@ let ContractState = (props) => {
             let _accAddress = await _signer.getAddress();
             let _accBalance = 0;
             //_accAddress = shortenAddress(_accAddress);
-            // let _accBalance = ethers.utils.formatEther(await _signer.getBalance());
+            // let _accBalance = ethers.formatEther(await _signer.getBalance());
             // _accBalance = _accBalance.match(/^-?\d+(?:\.\d{0,2})?/)[0];
             setAcc({ address: _accAddress, balance: _accBalance });
             setProvider({ provider: _provider, signer: _signer });
@@ -118,6 +118,34 @@ let ContractState = (props) => {
         }
     }
 
+    async function getMarkedRecords() {
+        try {
+            let _nftcontract = await NftContract.connect(Provider.signer);
+            let _marketContract = await MarketplaceContract.connect(Provider.signer);
+            const array = [];
+
+            if (_nftcontract && _marketContract) {
+                const maxRecordId = await _marketContract._recordId();
+
+                for (let i = 1; i <= Number(maxRecordId); i++) {
+                    const record = await _marketContract._records(i);
+
+                    if (record && record.seller != nullAddress && record.buyer == nullAddress) {
+                        let uri = await _nftcontract._uri(record.tokenId);
+                        let obj = await filter(uri);
+                        let fullObj = { ...obj, price: Number(ethers.formatEther(record[3])), seller: record[0], tokenId: Number(record[1]), copies: Number(record[2]) };
+                        console.log(fullObj);
+                        array.push(fullObj);
+                    }
+                }
+            }
+            return array;
+        } catch (error) {
+            console.log('error while getting marked records');
+            console.log(error);
+        }
+    }
+
     async function getOwnedTokens(user) {
         try {
             let _nftcontract = await NftContract.connect(Provider.signer);
@@ -125,7 +153,7 @@ let ContractState = (props) => {
             const maxTokenId = await _marketContract._tokenId();
             const array = [];
 
-            if (_nftcontract) {
+            if (_nftcontract && _marketContract) {
                 for (let i = 1; i <= Number(maxTokenId); i++) {
                     const balance = await _nftcontract.balanceOf(user, i);
 
@@ -148,11 +176,11 @@ let ContractState = (props) => {
         try {
             let _marketContract = await MarketplaceContract.connect(Provider.signer);
             const lockedBalance = await _marketContract._lockedBalance(tokenId, user);
-            if (Number(lockedBalance) >= 0 ){
+            if (Number(lockedBalance) >= 0) {
                 console.log("done");
                 return Number(lockedBalance);
             }
-            else{
+            else {
                 throw "locked balance < 0"
             }
         } catch (error) {
@@ -164,8 +192,9 @@ let ContractState = (props) => {
     const contractFunction = {
         'mint': minToken,
         'getOwned': getOwnedTokens,
-        'getLocked' : getLockedBalance,
-        'list' : list,
+        'getLocked': getLockedBalance,
+        'list': list,
+        'getMarkedRecords': getMarkedRecords,
         //'getAllTx': getAllTx
     }
 

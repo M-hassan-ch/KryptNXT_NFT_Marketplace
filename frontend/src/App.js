@@ -13,6 +13,7 @@ import ViewNft from './components/pages/ViewNft';
 import Profile from './components/pages/Profile';
 import Settings from './components/pages/Settings';
 import { ContractState } from './context/contractState';
+import BuyNft from './components/pages/BuyNft';
 
 
 function App() {
@@ -49,6 +50,11 @@ function App() {
 
             <Route path="/nft/:id" element={<React.Fragment>
               <ViewNft />
+            </React.Fragment>}>
+            </Route>
+
+            <Route path="/nft/buy/:id" element={<React.Fragment>
+              <BuyNft/>
             </React.Fragment>}>
             </Route>
 

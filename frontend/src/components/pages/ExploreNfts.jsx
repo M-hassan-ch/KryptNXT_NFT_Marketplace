@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useState, useContext, useEffect } from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
 import style from '../../stylesheets/exploreNfts.module.css'
 import { Link } from 'react-router-dom'
+import Context from "../../context/contractContext";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import Button from '@mui/material/Button';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -8,16 +10,40 @@ import Navbar from '../Navbar'
 import Footer from '../Footer'
 import { TextField, InputAdornment, IconButton } from '@mui/material';
 import { Search } from '@mui/icons-material';
-import ExploreCard from '../ExploreCard';
 import nft1 from '../icons/nft1.png'
 import nft2 from '../icons/nft2.png'
 import nft3 from '../icons/nft3.png'
+import BuyingCard from '../BuyingCard';
 
 export default function ExploreNfts() {
-    let desc = 'Lorem ipsum dolor sit amet,  dlkss consetetur It is a long established fact Lorem ipsum dolor sit amet,  dlkss consetetur '
+
+    const context = useContext(Context);
+    const [IsLoading, setIsLoading] = useState(false);
+    const [Objects, setObjects] = React.useState([]);
+
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                setIsLoading(true);
+                setObjects([]);
+
+                const array = await context.contractFunction.getMarkedRecords();
+                if (array) {
+                    setObjects(array);
+                    setIsLoading(false);
+                }
+
+            } catch (error) {
+                setIsLoading(false);
+                console.log(error);
+            }
+        }
+        loadData();
+    }, [])
+
     return (
         <>
-            <Navbar background = {'#040404'}/>
+            <Navbar background={'#040404'} />
 
             <div className={`${style.explorePage} py-md-5`}>
                 <section className={`container pb-md-2`}>
@@ -79,26 +105,33 @@ export default function ExploreNfts() {
                     </div>
 
                     {/* cards */}
-                    <div className={`row mt-md-4 ${style.yellowBorder} justify-content-around`}>
-                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft2} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                    <div className={`row mt-md-4 ${style.yellowBorder}`}>
 
-                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft3} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                        {
+                            IsLoading ? <CircularProgress className='mx-auto' color="secondary" /> : Objects.map((item, index) => {
 
-                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft1} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                                if (index % 3 == 0) {
+                                    return (
+                                        <>
+                                            <div className='w-100'></div>
+                                            < BuyingCard colSize={3} custom={`mt-md-4 mx-md-5`
+                                            } obj = {item} key = {index} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                                        </>
+                                    )
+                                }
+                                return (
+                                    < BuyingCard colSize={3} custom={`mt-md-4 mx-md-5`
+                                    } key = {index} obj = {item} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                                )
+                            })
+                        }
 
-                        <div className='w-100'></div>
-
-                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft1} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
-
-                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={''} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
-
-                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft3} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
-
+                       
                     </div>
                 </section>
             </div>
 
-            <Footer background = {'#040404'}/>
+            <Footer background={'#040404'} />
         </>
     )
 }

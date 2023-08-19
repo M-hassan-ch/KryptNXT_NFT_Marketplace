@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import Navbar from '../Navbar'
 import Footer from '../Footer'
-import style from '../../stylesheets/viewNft.module.css'
+import style from '../../stylesheets/buyNft.module.css'
 import nft1 from '../icons/nft1.png'
 import accIcon from '../icons/accIcon.png'
 import { useParams, useLocation } from "react-router-dom";
@@ -20,6 +20,7 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import { ethers } from 'ethers'
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -59,13 +60,11 @@ CustomTabPanel.propTypes = {
 //     };
 // }
 
-export default function ViewNft(props) {
+export default function BuyNft(props) {
     const { state } = useLocation();
+    
     const context = useContext(Context);
-    const [LockedBalance, setLockedBalance] = useState(NaN);
-    const [BuyerView, setBuyerView] = useState(false);
     const params = useParams();
-    const [Refresh, setRefresh] = useState(true);
 
     const [value, setValue] = React.useState(0);
 
@@ -97,27 +96,22 @@ export default function ViewNft(props) {
         setValue(newValue);
     };
 
-    const listNft = async () => {
+    const buy = async () => {
         try {
-            const _copies = document.getElementById("copies").value;
-            const _price = document.getElementById("price").value;
-            // console.log(parseInt(copies), price);
-            if (Number(_copies) <= 0) {
-                setFormValidationError({ open: true, msg: "Invalid number of copies" });
-            } else if (Number(_price) <= 0) {
-                setFormValidationError({ open: true, msg: "Invalid price" });
+            const accBalance = await context.Provider.provider.getBalance(context.account.address);
+            // console.log(context.account.balance);
+            if (context.account.address == state.props.obj.seller){
+                setFormValidationError({ open: true, msg: "Cannot buy your own item" });
             }
-            else if (state.props.copies - LockedBalance < _copies) {
-                setFormValidationError({ open: true, msg: "Insufficient owned copies" });
+            else if (Number(accBalance) < Number(ethers.parseEther(`${state.props.obj.price}`))) {
+                setFormValidationError({ open: true, msg: "Insufficient balance" });
             }
             else {
                 setIsLoading(true);
-                
-                let obj =  {
-                    seller : state.props.owner,
+
+                let obj = {
+                    seller: state.props.owner,
                     tokenId: state.props.tokenId,
-                    copies: _copies,
-                    price: _price,
                     buyer: '',
                 }
                 const receipt = await context.contractFunction.list(obj);
@@ -126,7 +120,7 @@ export default function ViewNft(props) {
                 if (txReceipt) {
                     setIsLoading(false);
                     setOpenSuccessMsg(true);
-                    setRefresh(true);
+                    // setRefresh(true);
                 }
             }
         } catch (error) {
@@ -137,17 +131,17 @@ export default function ViewNft(props) {
         }
     }
 
-    useEffect(() => {
-        const getLockedBalance = async () => {
-            console.log('loading locked balance......');
-            const balance = await context.contractFunction.getLocked(context.account.address, state.props.tokenId);
-            if (Number(balance) >= 0) {
-                setLockedBalance(balance);
-                console.log('ocked balance updated');
-            }
-        }
-        getLockedBalance();
-    }, [Refresh])
+    // useEffect(() => {
+    //     const getLockedBalance = async () => {
+    //         console.log('loading locked balance......');
+    //         const balance = await context.contractFunction.getLocked(context.account.address, state.props.tokenId);
+    //         if (Number(balance) >= 0) {
+    //             setLockedBalance(balance);
+    //             console.log('ocked balance updated');
+    //         }
+    //     }
+    //     getLockedBalance();
+    // }, [Refresh])
 
     return (
         <>
@@ -160,7 +154,7 @@ export default function ViewNft(props) {
 
             <Snackbar open={OpenSuccessMsg} autoHideDuration={2000} onClose={handleSuccessMsgClose} anchorOrigin={{ vertical, horizontal }}>
                 <Alert severity="success" onClose={handleClose} sx={{ width: '100%' }}>
-                    NFT listed successfully!
+                    NFT bought successfully!
                 </Alert>
             </Snackbar>
 
@@ -170,14 +164,14 @@ export default function ViewNft(props) {
                 <div className={`container py-md-3 ${style.redBorder}`}>
                     <div className={`row ${style.blueBorder} justify-content-`}>
                         <div className={`p-0 ms-md-5 col-md-5 ${style.yellowBorder}`}>
-                            <img src={state.props.img} alt="nft" className={`${style.nftImg}`} />
+                            <img src={`https://ipfs.io/ipfs/${state.props.obj.imgUri}`} alt="nft" className={`${style.nftImg}`} />
                         </div>
 
                         <div className={`col-md-6 ms-md-3 ps-md-5 ${style.yellowBorder}`}>
                             <div className='row'>
                                 <div className='col-12'>
                                     <Typography variant="h1" component="h1" style={{ fontSize: '50px', fontWeight: 'bold' }}>
-                                        {state.props.title} <FavoriteBorderOutlinedIcon fontSize='95px' />
+                                        {state.props.obj.name} <FavoriteBorderOutlinedIcon fontSize='95px' />
                                     </Typography>
                                 </div>
 
@@ -192,7 +186,7 @@ export default function ViewNft(props) {
                                             <p style={{ fontSize: '12px', fontWeight: 'bold' }} className={`m-0 ${style.greyColor} ${style.blueBorder}`}>Current owner</p>
 
                                             <p className={` ${style.blueBorder}`} style={{ fontSize: '20px', letterSpacing: '1px', fontWeight: 'bold' }}>
-                                                {formatAddr(state.props.owner)}
+                                                {formatAddr(state.props.obj.seller)}
                                                 {/* 0x7E14a......09e4 */}
                                             </p>
                                         </div>
@@ -205,87 +199,35 @@ export default function ViewNft(props) {
                                     <div className={`row py-md-3 px-md-3 justify-content-between`} style={{ background: 'rgba(142, 142, 142, 0.12)', borderRadius: '25px' }}>
 
                                         <div className={`col-md-4 ${style.redBorder}`}>
-                                            {
-                                                BuyerView ?
-                                                    <>
-                                                        <p className={`m-0 ${style.greyColor}`} style={{ color: '#ADADAD', fontWeight: 'bold', fontSize: '18px' }}> Price </p>
+                                            <p className={`m-0 ${style.greyColor}`} style={{ color: '#ADADAD', fontWeight: 'bold', fontSize: '18px' }}> Price </p>
 
-                                                        <p className={`m-0 ${style.textOverflow}`} style={{ fontWeight: 'bold', fontSize: '22px', letterSpacing: '1px' }}> {props.price ? props.price : '0.149'} </p>
+                                            <p className={`m-0 ${style.textOverflow}`} style={{ fontWeight: 'bold', fontSize: '22px', letterSpacing: '1px' }}> {state.props.obj.price} </p>
 
-                                                        <p className={`m-0 ${style.greyColor}`} style={{ color: '#777373', fontWeight: 'bold', fontSize: '10px' }}> MATIC </p>
-                                                    </>
-                                                    :
+                                            <p className={`m-0 ${style.greyColor}`} style={{ color: '#777373', fontWeight: 'bold', fontSize: '10px' }}> MATIC </p>
 
-                                                    <>
-                                                        <p className={`m-0 ${style.greyColor}`} style={{ color: '#ADADAD', fontWeight: 'bold', fontSize: '18px' }}> Locked </p>
-
-                                                        <p className={`m-0 ${style.textOverflow}`} style={{ fontWeight: 'bold', fontSize: '22px', letterSpacing: '1px' }}> {LockedBalance} </p>
-
-                                                        <p className={`m-0 ${style.greyColor}`} style={{ color: '#777373', fontWeight: 'bold', fontSize: '10px' }}> COPIES </p>
-                                                    </>
-
-                                            }
                                         </div>
 
                                         <div className={`col-md-4 ${style.redBorder}`}>
                                             <p className={`m-0 ${style.greyColor}`} style={{ color: '#ADADAD', fontWeight: 'bold', fontSize: '18px' }}> Copies </p>
 
-                                            <p className={`m-0 ${style.textOverflow}`} style={{ fontWeight: 'bold', fontSize: '22px', letterSpacing: '1px' }}> {state.props.copies ? state.props.copies : 'NIL'} </p>
+                                            <p className={`m-0 ${style.textOverflow}`} style={{ fontWeight: 'bold', fontSize: '22px', letterSpacing: '1px' }}> {state.props.obj.copies} </p>
                                         </div>
 
 
                                     </div>
 
-                                    {
-                                        !BuyerView &&
-
-                                        <div className={`row mt-md-4 justify-content-between`} style={{ background: 'transparent', borderRadius: '20px' }}>
-
-                                            <div className={`col-5 p-0 ${style.redBorder}`}>
-
-                                                <input type="number" className={` w-100 px-3 ${style.inputField}`} placeholder="Copies to list" id='copies' min={0} style={{ height: '100%' }}
-                                                />
-
-                                            </div>
-
-                                            <div className={`col-6 p-0 ${style.redBorder}`}>
-
-                                                <OutlinedInput
-                                                    id="price"
-                                                    type='number'
-                                                    endAdornment={<InputAdornment position="end" className={`${style.greyColor}`} >MATIC</InputAdornment>}
-                                                    aria-describedby="outlined-weight-helper-text"
-                                                    inputProps={{
-                                                        'aria-label': 'weight',
-                                                        min: 0,
-                                                    }}
-                                                    placeholder={'Price'}
-                                                    sx={{ color: 'white', borderRadius: '12px' }}
-                                                    className={` py-1 w-100 px-3 ${style.inputField}`}
-
-                                                />
-
-                                            </div>
-
-                                        </div>
-                                    }
-
                                 </div>
 
                                 <div className={`col-md-7 p-0 mt-md-4 ms-md-3  ${style.yellowBorder}`}>
-                                    {
-                                        BuyerView ?
-                                            <button className={`btn px-md-5 py-md-2 ${style.btnBuy}`}>Buy Item</button>
-                                            :
-                                            <button className={`btn px-md-5 py-md-2 ${style.btnBuy}`} disabled={IsLoading} onClick={listNft}>
-                                                {
-                                                    IsLoading ?
-                                                        <CircularProgress color="secondary" />
-                                                        :
-                                                        'List Item'
-                                                }
-                                            </button>
-                                    }
+
+                                    <button className={`btn px-md-5 py-md-2 ${style.btnBuy}`} disabled={IsLoading} onClick={buy}>
+                                        {
+                                            IsLoading ?
+                                                <CircularProgress color="secondary" />
+                                                :
+                                                'Buy Item'
+                                        }
+                                    </button>
 
                                 </div>
                             </div>
@@ -322,7 +264,7 @@ export default function ViewNft(props) {
                                     <p style={{ textAlign: 'justify' }}>
                                         {
                                             value == 0 ?
-                                                state.props.desc :
+                                                state.props.obj.desc :
                                                 ''
                                         }
                                     </p>
