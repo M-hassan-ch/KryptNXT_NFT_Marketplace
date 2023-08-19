@@ -19,6 +19,7 @@ let ContractState = (props) => {
 
     const marketplaceContractAddress = '0x0C6564F4101b5D5BEA5d66e78b6676A725A75971';
     const nftContractAddress = '0xe5Cb745D8b8178a8930382D252fACBe25b403838';
+    let nullAddress = "0x0000000000000000000000000000000000000000";
 
     const navigate = useNavigate();
 
@@ -100,6 +101,23 @@ let ContractState = (props) => {
         }
     }
 
+    async function list(obj) {
+        try {
+            obj.buyer = nullAddress;
+            obj.price = ethers.parseEther(obj.price);
+            let _contract = await MarketplaceContract.connect(Provider.signer);
+            if (_contract) {
+                console.log(obj);
+                const res = await _contract.markForSale(obj);
+                return res;
+            }
+        } catch (error) {
+            // // alert('error while minting token');
+            console.log('error while listing token');
+            console.log(error);
+        }
+    }
+
     async function getOwnedTokens(user) {
         try {
             let _nftcontract = await NftContract.connect(Provider.signer);
@@ -147,6 +165,7 @@ let ContractState = (props) => {
         'mint': minToken,
         'getOwned': getOwnedTokens,
         'getLocked' : getLockedBalance,
+        'list' : list,
         //'getAllTx': getAllTx
     }
 

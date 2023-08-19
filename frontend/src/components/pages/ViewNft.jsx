@@ -17,6 +17,14 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
+import CircularProgress from '@mui/material/CircularProgress';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -57,25 +65,105 @@ export default function ViewNft(props) {
     const [LockedBalance, setLockedBalance] = useState(NaN);
     const [BuyerView, setBuyerView] = useState(false);
     const params = useParams();
+    let refresh = true;
 
     const [value, setValue] = React.useState(0);
+
+    const [IsLoading, setIsLoading] = useState(false);
+    const [OpenSuccessMsg, setOpenSuccessMsg] = useState(false);
+
+    const [FormValidationError, setFormValidationError] = useState({ open: false, msg: '' });
+    const [barState, setState] = React.useState({
+        vertical: 'top',
+        horizontal: 'center',
+    });
+    const { vertical, horizontal } = barState;
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setFormValidationError({ open: false, msg: "" });
+    };
+
+    const handleSuccessMsgClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenSuccessMsg(false);
+    };
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
+    const listNft = async () => {
+        try {
+            const _copies = document.getElementById("copies").value;
+            const _price = document.getElementById("price").value;
+            // console.log(parseInt(copies), price);
+            if (Number(_copies) <= 0) {
+                setFormValidationError({ open: true, msg: "Invalid number of copies" });
+            } else if (Number(_price) <= 0) {
+                setFormValidationError({ open: true, msg: "Invalid price" });
+            }
+            else if (state.props.copies - LockedBalance < _copies) {
+                setFormValidationError({ open: true, msg: "Insufficient owned copies" });
+            }
+            else {
+                setIsLoading(true);
+                
+                let obj =  {
+                    seller : state.props.owner,
+                    tokenId: state.props.tokenId,
+                    copies: _copies,
+                    price: _price,
+                    buyer: '',
+                }
+                const receipt = await context.contractFunction.list(obj);
+                const txReceipt = await context.Provider.provider.waitForTransaction(receipt?.hash);
+
+                if (txReceipt) {
+                    setIsLoading(false);
+                    setOpenSuccessMsg(true);
+                    refresh = true;
+                }
+            }
+        } catch (error) {
+            console.log("Error while calling listNft()");
+            console.log(error);
+            setFormValidationError({ open: true, msg: "Something went wrong" });
+            setIsLoading(false);
+        }
+    }
+
     useEffect(() => {
         const getLockedBalance = async () => {
+            console.log('loading locked balance......');
             const balance = await context.contractFunction.getLocked(context.account.address, state.props.tokenId);
             if (Number(balance) >= 0) {
                 setLockedBalance(balance);
+                console.log('ocked balance updated');
             }
         }
         getLockedBalance();
-    }, [])
+    }, [refresh])
 
     return (
         <>
+
+            <Snackbar open={FormValidationError.open} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical, horizontal }}>
+                <Alert severity="error" onClose={handleClose} sx={{ width: '100%' }}>
+                    {`${FormValidationError.msg}!`}
+                </Alert>
+            </Snackbar>
+
+            <Snackbar open={OpenSuccessMsg} autoHideDuration={2000} onClose={handleSuccessMsgClose} anchorOrigin={{ vertical, horizontal }}>
+                <Alert severity="success" onClose={handleClose} sx={{ width: '100%' }}>
+                    NFT listed successfully!
+                </Alert>
+            </Snackbar>
+
             <Navbar background={'#040404'} />
 
             <section className={`py-md-5 ${style.viewNftPage}`}>
@@ -163,7 +251,7 @@ export default function ViewNft(props) {
                                             <div className={`col-6 p-0 ${style.redBorder}`}>
 
                                                 <OutlinedInput
-                                                    id="outlined-adornment-weight"
+                                                    id="price"
                                                     type='number'
                                                     endAdornment={<InputAdornment position="end" className={`${style.greyColor}`} >MATIC</InputAdornment>}
                                                     aria-describedby="outlined-weight-helper-text"
@@ -189,7 +277,14 @@ export default function ViewNft(props) {
                                         BuyerView ?
                                             <button className={`btn px-md-5 py-md-2 ${style.btnBuy}`}>Buy Item</button>
                                             :
-                                            <button className={`btn px-md-5 py-md-2 ${style.btnBuy}`}>List Item</button>
+                                            <button className={`btn px-md-5 py-md-2 ${style.btnBuy}`} onClick={listNft}>
+                                                {
+                                                    IsLoading ?
+                                                        <CircularProgress color="secondary" />
+                                                        :
+                                                        'List Item'
+                                                }
+                                            </button>
                                     }
 
                                 </div>
@@ -226,9 +321,9 @@ export default function ViewNft(props) {
                                 <CustomTabPanel value={value} index={0}>
                                     <p style={{ textAlign: 'justify' }}>
                                         {
-                                            value == 0? 
-                                            state.props.desc :
-                                            ''
+                                            value == 0 ?
+                                                state.props.desc :
+                                                ''
                                         }
                                     </p>
                                 </CustomTabPanel>
