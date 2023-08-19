@@ -3,6 +3,7 @@ import marketplaceArtifacts from "../artifacts/contracts/Marketplace.sol/Marketp
 import nftArtifacts from "../artifacts/contracts/KryptERC1155.sol/KryptERC1155.json"
 
 import shotenAddress from '../utility/shortenAddress'
+import filter from '../utility/extractMetadata'
 import { useState } from 'react';
 import { useEffect } from 'react';
 
@@ -100,8 +101,35 @@ let ContractState = (props) => {
         }
     }
 
+    async function getOwnedTokens(user) {
+        try {
+            let _nftcontract = await NftContract.connect(Provider.signer);
+            let _marketContract = await MarketplaceContract.connect(Provider.signer);
+            const maxTokenId = await _marketContract._tokenId();
+            const array = [];
+
+            if (_nftcontract) {
+                for (let i = 1; i <= Number(maxTokenId); i++) {
+                    const balance = await _nftcontract.balanceOf(user, i);
+
+                    if (Number(balance) > 0) {
+                        let uri = await _nftcontract._uri(i);
+                        let obj = await filter(uri);
+                        const updatedObject = { ...obj, balance: Number(balance) };
+                        array.push(updatedObject);
+                    }
+                }
+            }
+            return array;
+        } catch (error) {
+            console.log('error while getting owned token');
+            console.log(error);
+        }
+    }
+
     const contractFunction = {
         'mint': minToken,
+        'getOwned': getOwnedTokens,
         //'getAllTx': getAllTx
     }
 

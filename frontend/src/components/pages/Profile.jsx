@@ -1,4 +1,5 @@
-import React, {useEffect} from 'react'
+import React, { useEffect, useContext, useState } from 'react'
+import Context from "../../context/contractContext";
 import style from '../../stylesheets/profile.module.css'
 import coverPic from '../icons/coverPic.png'
 import profilePic from '../icons/profilePic.png'
@@ -9,6 +10,7 @@ import nft3 from '../icons/nft3.png'
 import Navbar from '../Navbar'
 import Footer from '../Footer'
 import ExploreCard from '../ExploreCard'
+import CircularProgress from '@mui/material/CircularProgress';
 
 import IosShareIcon from '@mui/icons-material/IosShare';
 import PendingOutlinedIcon from '@mui/icons-material/PendingOutlined';
@@ -26,6 +28,8 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
 function CustomTabPanel(props) {
+    const context = useContext(Context);
+
     const { children, value, index, ...other } = props;
 
     return (
@@ -63,10 +67,35 @@ export default function Profile() {
     let desc = ''
 
     const [value, setValue] = React.useState(0);
+    const [Objects, setObjects] = React.useState([]);
+    const [IsLoading, setIsLoading] = useState(false);
+    const context = useContext(Context);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                setIsLoading(true);
+                setObjects([]);
+
+                if (value == 0) {
+                    const array = await context.contractFunction.getOwned(context.account.address);
+                    if (array) {
+                        setObjects(array);
+                        setIsLoading(false);
+                    }
+                }
+            } catch (error) {
+                setIsLoading(false);
+                console.log(error);
+            }
+        }
+        loadData();
+    }, [value])
+
 
 
     return (
@@ -155,7 +184,6 @@ export default function Profile() {
                                                 color: '#FFFF',
                                             },
                                         }} />
-
                                         <Tab label="More" className='px-3 ms-md-5 ' sx={{
                                             color: '#FFFF',
                                             bgcolor: value === 3 ? 'rgba(15, 7, 21, 0.67)' : 'inherit',
@@ -211,12 +239,29 @@ export default function Profile() {
                                     </div>
 
                                     {/* cards */}
-                                    <div className={`row mt-md-4 ${style.yellowBorder} justify-content-around`}>
-                                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft2} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                                    <div className={`row mt-md-4 ${style.yellowBorder} justify-content-ev
+                                    `}>
 
-                                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft3} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                                        {
+                                            IsLoading ? <CircularProgress className='mx-auto' color="secondary" /> : Objects.map((item, index) => {
 
-                                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft1} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                                                if (index % 3 == 0) {
+                                                    return (
+                                                        <>
+                                                            <div className='w-100'></div>
+                                                            < ExploreCard colSize={3} custom={`mt-md-4 mx-md-5`
+                                                            } title={item.name} desc={item.desc} copies={item.balance} price={''} img={`https://ipfs.io/ipfs/${item.imgUri}`} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                                                        </>
+                                                    )
+                                                }
+                                                return (
+                                                    < ExploreCard colSize={3} custom={`mt-md-4 mx-md-5`
+                                                    } title={item.name} desc={item.desc} copies={item.balance} price={''} img={`https://ipfs.io/ipfs/${item.imgUri}`} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                                                )
+                                            })
+                                        }
+
+                                        {/* <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft1} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
 
                                         <div className='w-100'></div>
 
@@ -224,7 +269,7 @@ export default function Profile() {
 
                                         <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={''} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
 
-                                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft3} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft3} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} /> */}
 
                                     </div>
                                 </CustomTabPanel>

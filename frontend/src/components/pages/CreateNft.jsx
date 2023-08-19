@@ -164,15 +164,6 @@ export default function CreateNft() {
                     if (metaHash) {
                         console.log("Metadata Hash!", metaHash);
 
-                        // context.contractFunction.mint(metaHash, parseInt(copies)).then(() => {
-                        //     setTimeout(() => {
-                        //         setFileHash(null);
-                        //         setMetaDataHash(null);
-                        //         setIsLoading(false);
-                        //         setOpenSuccessMsg(true);
-                        //     }, 3000);
-                        // });
-
                         const receipt = await context.contractFunction.mint(metaHash, parseInt(copies));
                         const txReceipt = await context.Provider.provider.waitForTransaction(receipt.hash);
                         // console.log(receipt.hash);
