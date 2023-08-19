@@ -250,26 +250,16 @@ export default function Profile() {
                                                         <>
                                                             <div className='w-100'></div>
                                                             < ExploreCard colSize={3} custom={`mt-md-4 mx-md-5`
-                                                            } title={item.name} desc={item.desc} copies={item.balance} price={''} img={`https://ipfs.io/ipfs/${item.imgUri}`} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                                                            } title={item.name} desc={item.desc} copies={item.balance} price={''} img={`https://ipfs.io/ipfs/${item.imgUri}`} tokenId = {item.tokenId} owner = {item.owner} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
                                                         </>
                                                     )
                                                 }
                                                 return (
                                                     < ExploreCard colSize={3} custom={`mt-md-4 mx-md-5`
-                                                    } title={item.name} desc={item.desc} copies={item.balance} price={''} img={`https://ipfs.io/ipfs/${item.imgUri}`} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                                                    } title={item.name} desc={item.desc} copies={item.balance} price={''} owner = {item.owner} tokenId = {item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
                                                 )
                                             })
                                         }
-
-                                        {/* <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft1} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
-
-                                        <div className='w-100'></div>
-
-                                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft1} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
-
-                                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={''} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
-
-                                        <ExploreCard colSize={3} custom={`mt-md-4`} title={''} desc={desc} copies={''} price={''} img={nft3} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} /> */}
 
                                     </div>
                                 </CustomTabPanel>

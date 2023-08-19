@@ -7,10 +7,9 @@ import filter from '../utility/extractMetadata'
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const ethers = require('ethers');
-
 
 let ContractState = (props) => {
     const [MarketplaceContract, setMarketplaceContract] = useState(null);
@@ -115,7 +114,7 @@ let ContractState = (props) => {
                     if (Number(balance) > 0) {
                         let uri = await _nftcontract._uri(i);
                         let obj = await filter(uri);
-                        const updatedObject = { ...obj, balance: Number(balance) };
+                        const updatedObject = { ...obj, balance: Number(balance), tokenId: i, owner: user };
                         array.push(updatedObject);
                     }
                 }
@@ -127,11 +126,41 @@ let ContractState = (props) => {
         }
     }
 
+    async function getLockedBalance(user, tokenId) {
+        try {
+            let _marketContract = await MarketplaceContract.connect(Provider.signer);
+            const lockedBalance = await _marketContract._lockedBalance(tokenId, user);
+            if (Number(lockedBalance) >= 0 ){
+                console.log("done");
+                return Number(lockedBalance);
+            }
+            else{
+                throw "locked balance < 0"
+            }
+        } catch (error) {
+            console.log('error while getting locked balance');
+            console.log(error);
+        }
+    }
+
     const contractFunction = {
         'mint': minToken,
         'getOwned': getOwnedTokens,
+        'getLocked' : getLockedBalance,
         //'getAllTx': getAllTx
     }
+
+    useEffect(() => {
+        // console.log("useEffect: updating account details");
+        let updateDetails = async () => {
+            connectWallet().then(() => {
+
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+        updateDetails();
+    }, [])
 
     return (
         <context.Provider value={{ MarketplaceContract, account, Provider, connectWallet, contractFunction }}>
