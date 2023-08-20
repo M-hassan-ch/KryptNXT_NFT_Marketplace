@@ -27,7 +27,7 @@ export default function ExploreNfts() {
                 setIsLoading(true);
                 setObjects([]);
 
-                const array = await context.contractFunction.getMarkedRecords();
+                const array = await context.contractFunction.getMarketplaceRecords();
                 if (array) {
                     setObjects(array);
                     setIsLoading(false);

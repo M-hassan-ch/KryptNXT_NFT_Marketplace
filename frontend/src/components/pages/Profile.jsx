@@ -26,9 +26,9 @@ import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
+import { useNavigate } from 'react-router-dom';
 
 function CustomTabPanel(props) {
-    const context = useContext(Context);
 
     const { children, value, index, ...other } = props;
 
@@ -63,8 +63,7 @@ CustomTabPanel.propTypes = {
 // }
 
 export default function Profile() {
-
-    let desc = ''
+    const navigate = useNavigate();
 
     const [value, setValue] = React.useState(0);
     const [Objects, setObjects] = React.useState([]);
@@ -75,6 +74,14 @@ export default function Profile() {
         setValue(newValue);
     };
 
+    function navigateToMarkedRecord(recordId) {
+        navigate(`/markedRecord/${recordId}`);
+    }
+
+    function navigateToViewNftDetails(tokenId) {
+        navigate(`/nft/${tokenId}`);
+    }
+
     useEffect(() => {
         const loadData = async () => {
             try {
@@ -83,6 +90,14 @@ export default function Profile() {
 
                 if (value == 0) {
                     const array = await context.contractFunction.getOwned(context.account.address);
+                    if (array) {
+                        setObjects(array);
+                        setIsLoading(false);
+                    }
+                }
+                else if (value == 1) {
+                    const array = await context.contractFunction.getMarkedRecords(context.account.address);
+
                     if (array) {
                         setObjects(array);
                         setIsLoading(false);
@@ -245,18 +260,13 @@ export default function Profile() {
                                         {
                                             IsLoading ? <CircularProgress className='mx-auto' color="secondary" /> : Objects.map((item, index) => {
 
-                                                if (index % 3 == 0) {
-                                                    return (
-                                                        <>
-                                                            <div className='w-100'></div>
-                                                            < ExploreCard colSize={3} custom={`mt-md-4 mx-md-5`
-                                                            } title={item.name} desc={item.desc} copies={item.balance} price={''} img={`https://ipfs.io/ipfs/${item.imgUri}`} tokenId = {item.tokenId} owner = {item.owner} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
-                                                        </>
-                                                    )
-                                                }
                                                 return (
-                                                    < ExploreCard colSize={3} custom={`mt-md-4 mx-md-5`
-                                                    } title={item.name} desc={item.desc} copies={item.balance} price={''} owner = {item.owner} tokenId = {item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                                                    <>
+                                                        {(index % 3 == 0) && <div className='w-100'></div>}
+
+                                                        < ExploreCard colSize={3} custom={`mt-md-4 mx-md-5`
+                                                        } title={item.name} desc={item.desc} copies={item.balance} price={''} owner={item.owner} tokenId={item.tokenId} endPoint = {item.tokenId}  img={`https://ipfs.io/ipfs/${item.imgUri}`} clickBehavior={navigateToViewNftDetails} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                                                    </>
                                                 )
                                             })
                                         }
@@ -264,7 +274,67 @@ export default function Profile() {
                                     </div>
                                 </CustomTabPanel>
                                 <CustomTabPanel value={value} index={1}>
-                                    Item Two
+                                    <div className={`row ${style.yellowBorder} mt-md-3 justify-content-between`}>
+                                        <div className={`col-md-2 ${style.blueBorder}`}>
+                                            <Button className={`px-md-4 py-md-2 w-100 ${style.btnFilter}`} sx={{ background: 'rgba(142, 142, 142, 0.12)', fontSize: '18px', fontWeight: 'bold', borderRadius: '8px' }} variant="contained" startIcon={<ArrowBackIosIcon />}>
+                                                Filters
+                                            </Button>
+                                        </div>
+
+                                        <div className={`col-md-7 ${style.blueBorder}`}>
+                                            <TextField
+                                                placeholder="Enter your search"
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <IconButton sx={{ color: 'white' }}>
+                                                                <Search />
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    ),
+                                                    sx: {
+                                                        '& input': {
+                                                            color: 'white',
+                                                        },
+                                                        '& input::placeholder': {
+                                                            color: 'white',
+                                                        },
+                                                        '& input:focus': {
+                                                            color: 'white',
+                                                        },
+                                                    },
+                                                }}
+                                                sx={{ background: 'rgba(142, 142, 142, 0.12)', fontSize: '18px', fontWeight: 'bold', borderRadius: '12px', height: '49px' }}
+                                                className={`w-100`}
+                                            />
+                                        </div>
+
+                                        <div className={`col-md-2 ${style.blueBorder}`}>
+                                            <Button className={`px-md-4 py-md-2 w-100 ${style.btnFilter}`} sx={{ background: 'rgba(142, 142, 142, 0.12)', fontSize: '18px', fontWeight: 'bold', borderRadius: '8px' }} variant="contained" endIcon={<ExpandMoreIcon fontSize={'50px'} />}>
+                                                Trending
+                                            </Button>
+                                        </div>
+
+                                    </div>
+
+                                    {/* cards */}
+                                    <div className={`row mt-md-4 ${style.yellowBorder} justify-content-ev
+                                    `}>
+
+                                        {
+                                            IsLoading ? <CircularProgress className='mx-auto' color="secondary" /> : Objects.map((item, index) => {
+                                                return (
+                                                    <>
+                                                        {(index % 3 == 0) && <div className='w-100'></div>}
+
+                                                        < ExploreCard key={index} colSize={3} custom={`mt-md-4 mx-md-5`
+                                                        } title={item.name} desc={item.desc} copies={item.copies} price={''} owner={item.owner} tokenId={item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} clickBehavior={navigateToMarkedRecord} endPoint={item.recordId} />
+                                                    </>
+                                                )
+                                            })
+                                        }
+
+                                    </div>
                                 </CustomTabPanel>
                                 <CustomTabPanel value={value} index={2}>
                                     Item Three

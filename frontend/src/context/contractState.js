@@ -23,12 +23,12 @@ let ContractState = (props) => {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        // console.log('iam clicked');
-        if (account.address === null) {
-            navigate('/', {});
-        }
-    }, [account.address])
+    // useEffect(() => {
+    //     // console.log('iam clicked');
+    //     if (account.address === null) {
+    //         navigate('/', {});
+    //     }
+    // }, [account.address])
 
 
     window.ethereum.on('accountsChanged', async function (accounts) {
@@ -118,7 +118,7 @@ let ContractState = (props) => {
         }
     }
 
-    async function getMarkedRecords() {
+    async function getMarketplaceRecords() {
         try {
             let _nftcontract = await NftContract.connect(Provider.signer);
             let _marketContract = await MarketplaceContract.connect(Provider.signer);
@@ -141,7 +141,7 @@ let ContractState = (props) => {
             }
             return array;
         } catch (error) {
-            console.log('error while getting marked records');
+            console.log('error while getting marketplace records');
             console.log(error);
         }
     }
@@ -172,6 +172,79 @@ let ContractState = (props) => {
         }
     }
 
+    async function getNftDetails(user, _tokenId) {
+        try {
+            let _nftcontract = await NftContract.connect(Provider.signer);
+            let _marketContract = await MarketplaceContract.connect(Provider.signer);
+
+            if (_nftcontract && _marketContract) {
+
+                const balance = await _nftcontract.balanceOf(user, _tokenId);
+
+                if (Number(balance) > 0) {
+                    let uri = await _nftcontract._uri(_tokenId);
+                    let obj = await filter(uri);
+                    const updatedObject = { ...obj, balance: Number(balance), tokenId: _tokenId, owner: user };
+                    return updatedObject;
+                }
+            }
+        } catch (error) {
+            console.log('error while getting NFT details');
+            console.log(error);
+        }
+    }
+
+    async function getMarkedRecords(user) {
+        try {
+            let _nftcontract = await NftContract.connect(Provider.signer);
+            let _marketContract = await MarketplaceContract.connect(Provider.signer);
+            const recordIds = await _marketContract.getMarkedRecordIds(user);
+            const array = [];
+
+            if (_nftcontract && _marketContract) {
+                for (let i = 0; i < recordIds.length; i++) {
+                    const record = await _marketContract._records(Number(recordIds[i]));
+
+                    if (record && record.seller != nullAddress && record.buyer == nullAddress) {
+                        let uri = await _nftcontract._uri(record.tokenId);
+                        let obj = await filter(uri);
+                        let fullObj = { ...obj, price: Number(ethers.formatEther(record[3])), seller: record[0], tokenId: Number(record[1]), copies: Number(record[2]), recordId: Number(recordIds[i]) };
+                        array.push(fullObj);
+                    }
+                }
+            }
+
+            return array;
+
+        } catch (error) {
+            console.log('error while getting marked records');
+            console.log(error);
+        }
+    }
+
+    async function getRecord(recordId) {
+        try {
+            let _nftcontract = await NftContract.connect(Provider.signer);
+            let _marketContract = await MarketplaceContract.connect(Provider.signer);
+
+            if (_nftcontract && _marketContract) {
+                const record = await _marketContract._records(recordId);
+
+                if (record) {
+                    let uri = await _nftcontract._uri(record.tokenId);
+                    let obj = await filter(uri);
+                    let fullObj = { ...obj, price: Number(ethers.formatEther(record[3])), seller: record[0], tokenId: Number(record[1]), copies: Number(record[2]), _recordId: recordId };
+                    return fullObj
+                }
+
+            }
+
+        } catch (error) {
+            console.log('error while getting record details');
+            console.log(error);
+        }
+    }
+
     async function getLockedBalance(user, tokenId) {
         try {
             let _marketContract = await MarketplaceContract.connect(Provider.signer);
@@ -194,7 +267,10 @@ let ContractState = (props) => {
         'getOwned': getOwnedTokens,
         'getLocked': getLockedBalance,
         'list': list,
+        'getMarketplaceRecords': getMarketplaceRecords,
         'getMarkedRecords': getMarkedRecords,
+        'getRecord': getRecord,
+        'getNftDetails': getNftDetails,
         //'getAllTx': getAllTx
     }
 

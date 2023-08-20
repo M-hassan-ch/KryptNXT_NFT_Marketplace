@@ -14,6 +14,7 @@ import Profile from './components/pages/Profile';
 import Settings from './components/pages/Settings';
 import { ContractState } from './context/contractState';
 import BuyNft from './components/pages/BuyNft';
+import ViewMarkedRecord from './components/pages/ViewMarkedRecord';
 
 
 function App() {
@@ -43,7 +44,7 @@ function App() {
             </React.Fragment>}>
             </Route>
 
-            <Route path="/profile/:id" element={<React.Fragment>
+            <Route path="/profile" element={<React.Fragment>
               <Profile />
             </React.Fragment>}>
             </Route>
@@ -55,6 +56,11 @@ function App() {
 
             <Route path="/nft/buy/:id" element={<React.Fragment>
               <BuyNft/>
+            </React.Fragment>}>
+            </Route>
+
+            <Route path="/markedRecord/:id" element={<React.Fragment>
+              <ViewMarkedRecord/>
             </React.Fragment>}>
             </Route>
 

@@ -10,7 +10,7 @@ export default function ExploreCard(props) {
     // const context = useContext(Context);
 
     function viewNFTDetails() {
-        navigate('/nft/1', {state : {props}});
+        navigate('/nft/1', { state: { props } });
     }
 
     return (
@@ -37,7 +37,10 @@ export default function ExploreCard(props) {
                             </div>
 
                             <div className={`col-4 ms-md-1 p-0 ${style.redBorder}`}>
-                                <Button className={`py-md-2 ${style.btnView} w-100`} onClick={viewNFTDetails} sx={{
+                                {/* onClick={viewNFTDetails} */}
+                                <Button className={`py-md-2 ${style.btnView} w-100`} onClick={() => {
+                                    props.clickBehavior(props.endPoint)
+                                }} sx={{
                                     color: '#390C4F',
                                     background: 'white',
                                     fontSize: '17px',
