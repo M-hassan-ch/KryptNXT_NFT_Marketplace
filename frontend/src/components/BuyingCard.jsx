@@ -1,7 +1,6 @@
 import { Button } from '@mui/material';
 import React from 'react'
 import style from "../stylesheets/buyingCard.module.css";
-import img1 from "./icons/nft2.png"
 
 import { useNavigate } from 'react-router-dom'
 

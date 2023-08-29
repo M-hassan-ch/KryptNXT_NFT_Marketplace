@@ -62,7 +62,7 @@ CustomTabPanel.propTypes = {
 
 export default function BuyNft(props) {
     const { state } = useLocation();
-    
+
     const context = useContext(Context);
     const params = useParams();
 
@@ -99,8 +99,7 @@ export default function BuyNft(props) {
     const buy = async () => {
         try {
             const accBalance = await context.Provider.provider.getBalance(context.account.address);
-            // console.log(context.account.balance);
-            if (context.account.address == state.props.obj.seller){
+            if (context.account.address == state.props.obj.seller) {
                 setFormValidationError({ open: true, msg: "Cannot buy your own item" });
             }
             else if (Number(accBalance) < Number(ethers.parseEther(`${state.props.obj.price}`))) {
@@ -109,12 +108,7 @@ export default function BuyNft(props) {
             else {
                 setIsLoading(true);
 
-                let obj = {
-                    seller: state.props.owner,
-                    tokenId: state.props.tokenId,
-                    buyer: '',
-                }
-                const receipt = await context.contractFunction.list(obj);
+                const receipt = await context.contractFunction.buyRecord(state.props.obj.recordId, state.props.obj.price);
                 const txReceipt = await context.Provider.provider.waitForTransaction(receipt?.hash);
 
                 if (txReceipt) {
@@ -122,9 +116,13 @@ export default function BuyNft(props) {
                     setOpenSuccessMsg(true);
                     // setRefresh(true);
                 }
+                else {
+                    alert('asaksnaknsa')
+                    throw "tx obj not recieved"
+                }
             }
         } catch (error) {
-            console.log("Error while calling listNft()");
+            console.log("Error while calling buy()");
             console.log(error);
             setFormValidationError({ open: true, msg: "Something went wrong" });
             setIsLoading(false);

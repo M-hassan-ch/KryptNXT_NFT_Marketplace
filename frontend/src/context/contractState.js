@@ -86,7 +86,7 @@ let ContractState = (props) => {
         }
     }
 
-    async function minToken(uri, copies) {
+    async function mintToken(uri, copies) {
         try {
             let _contract = await MarketplaceContract.connect(Provider.signer);
             if (_contract) {
@@ -133,8 +133,7 @@ let ContractState = (props) => {
                     if (record && record.seller != nullAddress && record.buyer == nullAddress) {
                         let uri = await _nftcontract._uri(record.tokenId);
                         let obj = await filter(uri);
-                        let fullObj = { ...obj, price: Number(ethers.formatEther(record[3])), seller: record[0], tokenId: Number(record[1]), copies: Number(record[2]) };
-                        console.log(fullObj);
+                        let fullObj = { ...obj, price: Number(ethers.formatEther(record[3])), seller: record[0], tokenId: Number(record[1]), copies: Number(record[2]), recordId: i };
                         array.push(fullObj);
                     }
                 }
@@ -222,6 +221,34 @@ let ContractState = (props) => {
         }
     }
 
+    async function getBoughtRecords(user) {
+        try {
+            let _nftcontract = await NftContract.connect(Provider.signer);
+            let _marketContract = await MarketplaceContract.connect(Provider.signer);
+            const recordIds = await _marketContract.getBoughtRecordIds(user);
+            const array = [];
+
+            if (_nftcontract && _marketContract) {
+                for (let i = 0; i < recordIds.length; i++) {
+                    const record = await _marketContract._records(Number(recordIds[i]));
+
+                    if (record && record.seller != nullAddress && record.buyer != nullAddress) {
+                        let uri = await _nftcontract._uri(record.tokenId);
+                        let obj = await filter(uri);
+                        let fullObj = { ...obj, price: Number(ethers.formatEther(record[3])), seller: record[0], tokenId: Number(record[1]), copies: Number(record[2]), recordId: Number(recordIds[i]), buyer: record[4] };
+                        array.push(fullObj);
+                    }
+                }
+            }
+
+            return array;
+
+        } catch (error) {
+            console.log('error while getting marked records');
+            console.log(error);
+        }
+    }
+
     async function getRecord(recordId) {
         try {
             let _nftcontract = await NftContract.connect(Provider.signer);
@@ -262,8 +289,22 @@ let ContractState = (props) => {
         }
     }
 
+    async function buyRecord(recId, price) {
+        try {
+            let _contract = await MarketplaceContract.connect(Provider.signer);
+            if (_contract) {
+                const tx = await _contract.buyRecord(recId, { value: ethers.parseEther(`${price}`) });
+                return tx;
+            }
+        } catch (error) {
+            // // alert('error while minting token');
+            console.log('error while buying record');
+            console.log(error);
+        }
+    }
+
     const contractFunction = {
-        'mint': minToken,
+        'mint': mintToken,
         'getOwned': getOwnedTokens,
         'getLocked': getLockedBalance,
         'list': list,
@@ -271,6 +312,8 @@ let ContractState = (props) => {
         'getMarkedRecords': getMarkedRecords,
         'getRecord': getRecord,
         'getNftDetails': getNftDetails,
+        'buyRecord': buyRecord,
+        'getBoughtRecords': getBoughtRecords,
         //'getAllTx': getAllTx
     }
 
