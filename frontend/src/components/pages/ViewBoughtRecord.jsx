@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import Navbar from '../Navbar'
 import Footer from '../Footer'
-import style from '../../stylesheets/viewMarkedRecord.module.css'
+import style from '../../stylesheets/viewBoughtRecord.module.css'
 import accIcon from '../icons/accIcon.png'
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { Typography } from '@mui/material';
@@ -58,7 +58,7 @@ CustomTabPanel.propTypes = {
 //     };
 // }
 
-export default function ViewMarkedRecord() {
+export default function ViewBoughtRecord() {
 
     const context = useContext(Context);
     const params = useParams();
@@ -106,41 +106,6 @@ export default function ViewMarkedRecord() {
 
     function navigateToProfile() {
         navigate(`/profile`);
-    }
-
-    const removeFromSale = async () => {
-        try {
-            const accBalance = await context.Provider.provider.getBalance(context.account.address);
-            // console.log(context.account.balance);
-            if (context.account.address == Record.seller) {
-                setFormValidationError({ open: true, msg: "Cannot buy your own item" });
-            }
-            else if (Number(accBalance) < Number(ethers.parseEther(`${Record.price}`))) {
-                setFormValidationError({ open: true, msg: "Insufficient balance" });
-            }
-            else {
-                setIsInProgress(true);
-
-                // let obj = {
-                //     seller: state.props.owner,
-                //     tokenId: state.props.tokenId,
-                //     buyer: '',
-                // }
-                // const receipt = await context.contractFunction.list(obj);
-                // const txReceipt = await context.Provider.provider.waitForTransaction(receipt?.hash);
-
-                // if (txReceipt) {
-                //     setIsInProgress(false);
-                //     setOpenSuccessMsg(true);
-                //     // setRefresh(true);
-                // }
-            }
-        } catch (error) {
-            console.log("Error while calling listNft()");
-            console.log(error);
-            setFormValidationError({ open: true, msg: "Something went wrong" });
-            setIsInProgress(false);
-        }
     }
 
     useEffect(() => {
@@ -260,7 +225,7 @@ export default function ViewMarkedRecord() {
 
                                             </div>
 
-                                            <div className={`col-md-7 p-0 mt-md-4 ms-md-3  ${style.yellowBorder}`}>
+                                            {/* <div className={`col-md-7 p-0 mt-md-4 ms-md-3  ${style.yellowBorder}`}>
 
                                                 <button className={`btn px-md-5 py-md-2 ${style.btnBuy}`} disabled={IsInProgress} onClick={removeFromSale}>
                                                     {
@@ -271,7 +236,7 @@ export default function ViewMarkedRecord() {
                                                     }
                                                 </button>
 
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
 

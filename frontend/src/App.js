@@ -15,6 +15,7 @@ import Settings from './components/pages/Settings';
 import { ContractState } from './context/contractState';
 import BuyNft from './components/pages/BuyNft';
 import ViewMarkedRecord from './components/pages/ViewMarkedRecord';
+import ViewBoughtRecord from './components/pages/ViewBoughtRecord';
 
 
 function App() {
@@ -55,18 +56,25 @@ function App() {
             </Route>
 
             <Route path="/nft/buy/:id" element={<React.Fragment>
-              <BuyNft/>
+              <BuyNft />
             </React.Fragment>}>
             </Route>
 
             <Route path="/markedRecord/:id" element={<React.Fragment>
-              <ViewMarkedRecord/>
+              <ViewMarkedRecord />
+            </React.Fragment>}>
+            </Route>
+
+            <Route path="/boughtRecord/:id" element={<React.Fragment>
+              <ViewBoughtRecord />
             </React.Fragment>}>
             </Route>
 
             <Route path="/:userA/settings" element={<React.Fragment>
               <Settings />
             </React.Fragment>}>
+
+
             </Route>
 
           </Routes>
