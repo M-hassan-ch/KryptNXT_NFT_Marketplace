@@ -83,6 +83,10 @@ export default function Profile() {
         navigate(`/boughtRecord/${recordId}`);
     }
 
+    function navigateToViewSoldRecord(recordId) {
+        navigate(`/soldRecord/${recordId}`);
+    }
+
     useEffect(() => {
         const loadData = async () => {
             try {
@@ -104,6 +108,14 @@ export default function Profile() {
                         setIsLoading(false);
                     }
                 }
+                else if (value == 2) {
+                    const array = await context.contractFunction.getSoldRecords(context.account.address);
+
+                    if (array) {
+                        setObjects(array);
+                        setIsLoading(false);
+                    }
+                }
                 else if (value == 3) {
                     const array = await context.contractFunction.getBoughtRecords(context.account.address);
 
@@ -118,7 +130,7 @@ export default function Profile() {
             }
         }
         loadData();
-    }, [value])
+    }, [value, context?.account?.address])
 
 
 
@@ -201,7 +213,7 @@ export default function Profile() {
                                                 color: '#FFFF',
                                             },
                                         }} />
-                                        <Tab label="Collections" className='px-3 ms-md-5 ' sx={{
+                                        <Tab label="Sold" className='px-3 ms-md-5 ' sx={{
                                             color: '#FFFF',
                                             bgcolor: value === 2 ? 'rgba(15, 7, 21, 0.67)' : 'inherit',
                                             '&.Mui-selected': {
@@ -352,7 +364,72 @@ export default function Profile() {
                                     </div>
                                 </CustomTabPanel>
                                 <CustomTabPanel value={value} index={2}>
-                                    Item three
+                                    <div className={`row ${style.yellowBorder} mt-md-3 justify-content-between`}>
+                                        <div className={`col-md-2 ${style.blueBorder}`}>
+                                            <Button className={`px-md-4 py-md-2 w-100 ${style.btnFilter}`} sx={{ background: 'rgba(142, 142, 142, 0.12)', fontSize: '18px', fontWeight: 'bold', borderRadius: '8px' }} variant="contained" startIcon={<ArrowBackIosIcon />}>
+                                                Filters
+                                            </Button>
+                                        </div>
+
+                                        <div className={`col-md-7 ${style.blueBorder}`}>
+                                            <TextField
+                                                placeholder="Enter your search"
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <IconButton sx={{ color: 'white' }}>
+                                                                <Search />
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    ),
+                                                    sx: {
+                                                        '& input': {
+                                                            color: 'white',
+                                                        },
+                                                        '& input::placeholder': {
+                                                            color: 'white',
+                                                        },
+                                                        '& input:focus': {
+                                                            color: 'white',
+                                                        },
+                                                    },
+                                                }}
+                                                sx={{ background: 'rgba(142, 142, 142, 0.12)', fontSize: '18px', fontWeight: 'bold', borderRadius: '12px', height: '49px' }}
+                                                className={`w-100`}
+                                            />
+                                        </div>
+
+                                        <div className={`col-md-2 ${style.blueBorder}`}>
+                                            <Button className={`px-md-4 py-md-2 w-100 ${style.btnFilter}`} sx={{ background: 'rgba(142, 142, 142, 0.12)', fontSize: '18px', fontWeight: 'bold', borderRadius: '8px' }} variant="contained" endIcon={<ExpandMoreIcon fontSize={'50px'} />}>
+                                                Trending
+                                            </Button>
+                                        </div>
+
+                                    </div>
+
+                                    {/* cards */}
+                                    <div className={`row mt-md-4 ${style.yellowBorder}
+                                    `}>
+
+                                        {
+                                            IsLoading ? <CircularProgress className='mx-auto' color="secondary" />
+                                                :
+                                                Objects.length === 0 ?
+                                                    <h2 className='mt-5' style={{ textAlign: 'center', letterSpacing: '1px' }}> No record found</h2>
+                                                    :
+                                                    Objects.map((item, index) => {
+                                                        return (
+                                                            <>
+                                                                {(index % 3 == 0) && <div className='w-100'></div>}
+
+                                                                < ExploreCard key={index} colSize={3} custom={`mt-md-4 mx-md-5`
+                                                                } title={item.name} desc={item.desc} copies={item.copies} price={''} owner={item.owner} tokenId={item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} clickBehavior={navigateToViewSoldRecord} endPoint={item.recordId} />
+                                                            </>
+                                                        )
+                                                    })
+                                        }
+
+                                    </div>
                                 </CustomTabPanel>
                                 <CustomTabPanel value={value} index={3}>
                                     <div className={`row ${style.yellowBorder} mt-md-3 justify-content-between`}>

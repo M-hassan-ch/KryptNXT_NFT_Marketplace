@@ -249,6 +249,34 @@ let ContractState = (props) => {
         }
     }
 
+    async function getSoldRecords(user) {
+        try {
+            let _nftcontract = await NftContract.connect(Provider.signer);
+            let _marketContract = await MarketplaceContract.connect(Provider.signer);
+            const recordIds = await _marketContract.getSoldRecordIds(user);
+            const array = [];
+
+            if (_nftcontract && _marketContract) {
+                for (let i = 0; i < recordIds.length; i++) {
+                    const record = await _marketContract._records(Number(recordIds[i]));
+
+                    if (record && record.seller != nullAddress && record.buyer != nullAddress) {
+                        let uri = await _nftcontract._uri(record.tokenId);
+                        let obj = await filter(uri);
+                        let fullObj = { ...obj, price: Number(ethers.formatEther(record[3])), seller: record[0], tokenId: Number(record[1]), copies: Number(record[2]), recordId: Number(recordIds[i]), buyer: record[4] };
+                        array.push(fullObj);
+                    }
+                }
+            }
+
+            return array;
+
+        } catch (error) {
+            console.log('error while getting sold records');
+            console.log(error);
+        }
+    }
+
     async function getRecord(recordId) {
         try {
             let _nftcontract = await NftContract.connect(Provider.signer);
@@ -314,6 +342,7 @@ let ContractState = (props) => {
         'getNftDetails': getNftDetails,
         'buyRecord': buyRecord,
         'getBoughtRecords': getBoughtRecords,
+        'getSoldRecords': getSoldRecords,
         //'getAllTx': getAllTx
     }
 

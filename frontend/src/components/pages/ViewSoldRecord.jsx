@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import Navbar from '../Navbar'
 import Footer from '../Footer'
-import style from '../../stylesheets/viewBoughtRecord.module.css'
+import style from '../../stylesheets/viewSoldRecord.module.css'
 import accIcon from '../icons/accIcon.png'
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { Typography } from '@mui/material';
@@ -58,7 +58,7 @@ CustomTabPanel.propTypes = {
 //     };
 // }
 
-export default function ViewBoughtRecord() {
+export default function ViewSoldRecord() {
 
     const context = useContext(Context);
     const params = useParams();

@@ -1,16 +1,14 @@
 import React, { useState, useContext, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar'
 import Footer from '../Footer'
 import style from '../../stylesheets/buyNft.module.css'
-import nft1 from '../icons/nft1.png'
 import accIcon from '../icons/accIcon.png'
 import { useParams, useLocation } from "react-router-dom";
 import { Typography } from '@mui/material';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import formatAddr from '../../utility/shortenAddress'
 import Context from "../../context/contractContext";
-import InputAdornment from '@mui/material/InputAdornment';
-import OutlinedInput from '@mui/material/OutlinedInput';
 
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
@@ -65,6 +63,7 @@ export default function BuyNft(props) {
 
     const context = useContext(Context);
     const params = useParams();
+    const navigate = useNavigate();
 
     const [value, setValue] = React.useState(0);
 
@@ -77,6 +76,10 @@ export default function BuyNft(props) {
         horizontal: 'center',
     });
     const { vertical, horizontal } = barState;
+
+    function navigateToViewBoughtRecord() {
+        navigate(`/profile`);
+    }
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -96,6 +99,10 @@ export default function BuyNft(props) {
         setValue(newValue);
     };
 
+    function navigateToViewBoughtRecord(recordId) {
+        navigate(`/boughtRecord/${recordId}`);
+    }
+
     const buy = async () => {
         try {
             const accBalance = await context.Provider.provider.getBalance(context.account.address);
@@ -114,10 +121,12 @@ export default function BuyNft(props) {
                 if (txReceipt) {
                     setIsLoading(false);
                     setOpenSuccessMsg(true);
-                    // setRefresh(true);
+
+                    setTimeout(() => {
+                        navigateToViewBoughtRecord(state.props.obj.recordId)
+                    }, 2000)
                 }
                 else {
-                    alert('asaksnaknsa')
                     throw "tx obj not recieved"
                 }
             }

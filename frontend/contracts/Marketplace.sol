@@ -6,6 +6,13 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "./KryptERC1155.sol";
 
+
+// transfer funds
+// transfer NFTs
+// remove from sale
+
+// if account is changes vavigate to marketplace, profile etc
+
 contract Marketplace is Ownable, Pausable {
 
     using EnumerableSet for EnumerableSet.UintSet;

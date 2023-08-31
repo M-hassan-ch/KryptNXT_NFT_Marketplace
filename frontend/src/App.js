@@ -70,6 +70,11 @@ function App() {
             </React.Fragment>}>
             </Route>
 
+            <Route path="/soldRecord/:id" element={<React.Fragment>
+              <ViewBoughtRecord />
+            </React.Fragment>}>
+            </Route>
+
             <Route path="/:userA/settings" element={<React.Fragment>
               <Settings />
             </React.Fragment>}>
