@@ -94,8 +94,11 @@ contract Marketplace is Ownable, Pausable {
         isValidRecordOwner(recId);
         recordIsNotSold(recId);
 
-        delete _records[recId];
+        MarkedRecord memory record = _records[recId];
+
+        _lockedBalance[record.tokenId][record.seller] -= record.copies;
         _markedRecordIds[msg.sender].remove(recId);
+        delete _records[recId];
     }
 
     function findValueFromPercentage(uint percentage, uint totalAmount) public pure returns(uint){

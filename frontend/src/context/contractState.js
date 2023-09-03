@@ -17,11 +17,11 @@ let ContractState = (props) => {
     const [account, setAcc] = useState({ address: null, balance: null });
     const [Provider, setProvider] = useState({ provider: null, signer: null });
 
-    const marketplaceContractAddress = '0x0C6564F4101b5D5BEA5d66e78b6676A725A75971';
-    const nftContractAddress = '0xe5Cb745D8b8178a8930382D252fACBe25b403838';
+    const marketplaceContractAddress = '0x2518FAfd01D03e1f8ce363F4112B841860C8d14c';
+    const nftContractAddress = '0x7d9A33ec41D58D8490994d5b4909757990D1A539';
     let nullAddress = "0x0000000000000000000000000000000000000000";
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     // useEffect(() => {
     //     // console.log('iam clicked');
@@ -288,7 +288,7 @@ let ContractState = (props) => {
                 if (record) {
                     let uri = await _nftcontract._uri(record.tokenId);
                     let obj = await filter(uri);
-                    let fullObj = { ...obj, price: Number(ethers.formatEther(record[3])), seller: record[0], tokenId: Number(record[1]), copies: Number(record[2]), _recordId: recordId };
+                    let fullObj = { ...obj, price: Number(ethers.formatEther(record[3])), seller: record[0], tokenId: Number(record[1]), copies: Number(record[2]), _recordId: recordId, buyer: record[4] };
                     return fullObj
                 }
 
@@ -331,6 +331,20 @@ let ContractState = (props) => {
         }
     }
 
+    async function removeFromSale(recId) {
+        try {
+            let _contract = await MarketplaceContract.connect(Provider.signer);
+            if (_contract) {
+                const tx = await _contract.removeFromSale(recId);
+                return tx;
+            }
+        } catch (error) {
+            // // alert('error while minting token');
+            console.log('error while removing record');
+            console.log(error);
+        }
+    }
+
     const contractFunction = {
         'mint': mintToken,
         'getOwned': getOwnedTokens,
@@ -343,6 +357,7 @@ let ContractState = (props) => {
         'buyRecord': buyRecord,
         'getBoughtRecords': getBoughtRecords,
         'getSoldRecords': getSoldRecords,
+        'removeFromSale': removeFromSale,
         //'getAllTx': getAllTx
     }
 

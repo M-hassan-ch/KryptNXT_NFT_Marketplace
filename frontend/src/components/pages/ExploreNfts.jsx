@@ -108,25 +108,23 @@ export default function ExploreNfts() {
                     <div className={`row mt-md-4 ${style.yellowBorder}`}>
 
                         {
-                            IsLoading ? <CircularProgress className='mx-auto' color="secondary" /> : Objects.map((item, index) => {
-
-                                if (index % 3 == 0) {
-                                    return (
-                                        <>
-                                            <div className='w-100'></div>
-                                            < BuyingCard colSize={3} custom={`mt-md-4 mx-md-5`
-                                            } obj = {item} key = {index} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
-                                        </>
-                                    )
-                                }
-                                return (
-                                    < BuyingCard colSize={3} custom={`mt-md-4 mx-md-5`
-                                    } key = {index} obj = {item} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
-                                )
-                            })
+                            IsLoading ? <CircularProgress className='mx-auto' color="secondary" /> :
+                                Objects.length === 0 ?
+                                    <h2 className='mt-5' style={{ textAlign: 'center', letterSpacing: '1px' }}> No record found</h2>
+                                    :
+                                    Objects.map((item, index) => {
+                                        return (
+                                            <>
+                                                {(index % 3 == 0) && <div className='w-100'></div>}
+                                                <div className='w-100'></div>
+                                                < BuyingCard colSize={3} custom={`mt-md-4 mx-md-5`
+                                                } obj={item} key={index} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                                            </>
+                                        )
+                                    })
                         }
 
-                       
+
                     </div>
                 </section>
             </div>

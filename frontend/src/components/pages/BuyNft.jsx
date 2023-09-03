@@ -77,7 +77,7 @@ export default function BuyNft(props) {
     });
     const { vertical, horizontal } = barState;
 
-    function navigateToViewBoughtRecord() {
+    function navigateToProfile() {
         navigate(`/profile`);
     }
 

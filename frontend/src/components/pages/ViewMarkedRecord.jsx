@@ -79,6 +79,8 @@ export default function ViewMarkedRecord() {
     });
     const { vertical, horizontal } = barState;
 
+    let nullAddress = "0x0000000000000000000000000000000000000000";
+
     const handleFormValidationClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -112,34 +114,38 @@ export default function ViewMarkedRecord() {
         try {
             const accBalance = await context.Provider.provider.getBalance(context.account.address);
             // console.log(context.account.balance);
-            if (context.account.address == Record.seller) {
-                setFormValidationError({ open: true, msg: "Cannot buy your own item" });
+            if (context.account.address != Record.seller) {
+                setFormValidationError({ open: true, msg: "Not a valid owner of record" });
             }
-            else if (Number(accBalance) < Number(ethers.parseEther(`${Record.price}`))) {
-                setFormValidationError({ open: true, msg: "Insufficient balance" });
+            else if (Record.buyer != nullAddress) {
+                setFormValidationError({ open: true, msg: "Record is already sold" });
             }
             else {
                 setIsInProgress(true);
 
-                // let obj = {
-                //     seller: state.props.owner,
-                //     tokenId: state.props.tokenId,
-                //     buyer: '',
-                // }
-                // const receipt = await context.contractFunction.list(obj);
-                // const txReceipt = await context.Provider.provider.waitForTransaction(receipt?.hash);
+                const receipt = await context.contractFunction.removeFromSale(Record._recordId);
+                const txReceipt = await context.Provider.provider.waitForTransaction(receipt?.hash);
 
-                // if (txReceipt) {
-                //     setIsInProgress(false);
-                //     setOpenSuccessMsg(true);
-                //     // setRefresh(true);
-                // }
+                if (txReceipt) {
+                    setIsInProgress(false);
+                    setOpenSuccessMsg(true);
+                    setTimeout(() => {
+                        navigateToProfile()
+                    }, 2000)
+                }
             }
         } catch (error) {
             console.log("Error while calling listNft()");
             console.log(error);
             setFormValidationError({ open: true, msg: "Something went wrong" });
             setIsInProgress(false);
+
+            setTimeout(() => {
+                setBackDropOpen(false);
+                setRecord(null);
+                setIsRecordLoading(false);
+                navigateToProfile();
+            }, 2000);
         }
     }
 
@@ -165,9 +171,9 @@ export default function ViewMarkedRecord() {
                 setTimeout(() => {
                     setBackDropOpen(false);
                     setRecord(null);
-                    navigateToProfile();
                     setIsRecordLoading(false);
-                }, 3000);
+                    navigateToProfile();
+                }, 2000);
             }
         }
         loadRecord();
