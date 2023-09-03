@@ -7,9 +7,10 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "./KryptERC1155.sol";
 
 
-// transfer funds
-// transfer NFTs
-// remove from sale
+// transfer funds -- done
+// transfer NFTs -- done
+// remove from sale  -- done
+// service fee -- done
 
 // if account is changes vavigate to marketplace, profile etc
 
@@ -29,6 +30,7 @@ contract Marketplace is Ownable, Pausable {
 
     uint public _recordId;
     uint public _tokenId;
+    uint public _servicePercentage;
     
     mapping(uint => MarkedRecord) public _records;
     
@@ -36,7 +38,6 @@ contract Marketplace is Ownable, Pausable {
     mapping(address => EnumerableSet.UintSet) _markedRecordIds;
     mapping(address => EnumerableSet.UintSet) _soldRecordIds;
     mapping(uint => mapping(address => uint)) public _lockedBalance;
-
 
     // buyer
     mapping(address => EnumerableSet.UintSet) _boughtRecordIds;
@@ -61,8 +62,11 @@ contract Marketplace is Ownable, Pausable {
     function markForSale(MarkedRecord calldata record) public{
         isValidRecord(record);
 
+        uint serviceFee = findValueFromPercentage(_servicePercentage, record.price);
+
         _recordId++;
         _records[_recordId] = record;
+        _records[_recordId].price += serviceFee;
         _markedRecordIds[msg.sender].add(_recordId);
         _lockedBalance[record.tokenId][record.seller] += record.copies;
     }
@@ -80,6 +84,9 @@ contract Marketplace is Ownable, Pausable {
         _soldRecordIds[record.seller].add(recId);
         _boughtRecordIds[msg.sender].add(recId);
         _lockedBalance[record.tokenId][record.seller] -= record.copies;
+
+        payable(record.seller).transfer(msg.value);
+        _nftContract.safeTransferFrom(record.seller, msg.sender, record.tokenId, record.copies, "");
     }
 
     function removeFromSale(uint recId) public {
@@ -89,6 +96,14 @@ contract Marketplace is Ownable, Pausable {
 
         delete _records[recId];
         _markedRecordIds[msg.sender].remove(recId);
+    }
+
+    function findValueFromPercentage(uint percentage, uint totalAmount) public pure returns(uint){
+        return (percentage * totalAmount) / 100;
+    }
+
+    function updateServicePercentage(uint value) public onlyOwner {
+        _servicePercentage = value;
     }
 
     function updateNftContract(address addr) public onlyOwner {
@@ -132,6 +147,12 @@ contract Marketplace is Ownable, Pausable {
         if(getUserBalance(record.seller, record.tokenId) < _lockedBalance[record.tokenId][record.seller] + record.copies){
             revert("Marketplace: Insufficient token balance");
         }
+    }
+
+    function withdrawAmount(uint amount) public onlyOwner{
+        require(amount > 0, "Main: amount is 0");
+        require(amount <= address(this).balance, "Main: Insufficient balance");
+        payable(owner()).transfer(amount);
     }
 
 }

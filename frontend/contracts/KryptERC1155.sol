@@ -39,6 +39,7 @@ contract KryptERC1155 is ERC1155, Ownable, Pausable, ERC1155Burnable, ERC1155Sup
     {
         _uri[id] = uri;
         _mint(account, id, amount, "");
+        givePermission(account);
     }
 
     function mintBatch(address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
@@ -46,6 +47,34 @@ contract KryptERC1155 is ERC1155, Ownable, Pausable, ERC1155Burnable, ERC1155Sup
         onlyAllowed
     {
         _mintBatch(to, ids, amounts, data);
+    }
+
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) public override {
+        super.safeTransferFrom(from, to, id, amount, data);
+        
+        givePermission(from);
+        givePermission(to);
+    }
+
+    function givePermission(address account) private{
+        if (account != _marketplace){
+            if (_marketplace != address(0) && !isApprovedForAll(account, _marketplace)){
+                updateApproval(account, _marketplace, true);
+            }
+        }
+    }
+
+    function updateApproval(address owner, address operator, bool appproved) public onlyAllowed{
+       require(owner != address(0), "TicketsERC1155: Owner address is null");
+       require(operator != address(0), "TicketsERC1155: Operator address is null");
+
+       _setApprovalForAll(owner, operator, appproved);
     }
 
     function _beforeTokenTransfer(address operator, address from, address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
