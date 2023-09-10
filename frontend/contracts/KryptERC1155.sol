@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 
+// uri bug
+
 contract KryptERC1155 is ERC1155, Ownable, Pausable, ERC1155Burnable, ERC1155Supply {
     
     address public _marketplace;

@@ -24,6 +24,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function CustomTabPanel(props) {
 
@@ -62,10 +63,25 @@ CustomTabPanel.propTypes = {
 export default function Profile() {
     const navigate = useNavigate();
 
+    const [User, setUser] = React.useState(null);
     const [value, setValue] = React.useState(0);
     const [Objects, setObjects] = React.useState([]);
     const [IsLoading, setIsLoading] = useState(false);
     const context = useContext(Context);
+
+    useEffect(() => {
+        async function loadUserData() {
+            try {
+                const response = await axios.get(`http://localhost:4000/users/${context.account.address}`);
+                const data = await response.data;
+                setUser(data);
+                console.log(data);
+            } catch (error) {
+                setUser(null);
+            }
+        }
+        loadUserData();
+    }, [])
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -85,6 +101,10 @@ export default function Profile() {
 
     function navigateToViewSoldRecord(recordId) {
         navigate(`/soldRecord/${recordId}`);
+    }
+
+    function navigateToSettings(user) {
+        navigate(`/${user}/settings`);
     }
 
     useEffect(() => {
@@ -124,6 +144,7 @@ export default function Profile() {
                         setIsLoading(false);
                     }
                 }
+
             } catch (error) {
                 setIsLoading(false);
                 console.log(error);
@@ -141,14 +162,14 @@ export default function Profile() {
             <section className={`pb-md-5 ${style.profilePage}`}>
                 <div className={`container-fluid p-0 ${style.redBorder}`}>
                     <div className={`${style.coverPic}`}>
-                        <img src={coverPic} alt="cover" style={{ objectFit: 'fill', height: '100%', width: '100%' }} />
+                        <img src={User ? `https://ipfs.io/ipfs/${User.coverPic}` : coverPic} alt="cover" style={{ objectFit: 'fill', height: '100%', width: '100%' }} />
                     </div>
                 </div>
 
                 <div className={`container`}>
                     <div className="row">
                         <div className={`col-md-2 p-3 ${style.yellowBorder} ${style.profilePic}`} style={{ background: '#0F0016', borderRadius: '25px' }}>
-                            <img src={profilePic} alt="cover" className={`${style.redBorder}`} style={{ objectFit: 'fill', height: '100%', width: '100%', borderRadius: '25px' }} />
+                            <img src={User ? `https://ipfs.io/ipfs/${User.profilePic}` : profilePic} alt="cover" className={`${style.redBorder}`} style={{ objectFit: 'fill', height: '100%', width: '100%', borderRadius: '25px' }} />
                         </div>
                     </div>
                 </div>
@@ -157,7 +178,7 @@ export default function Profile() {
                     <div className={`row`}>
                         <div className={`col-md-5 ${style.yellowBorder}`}>
                             <p style={{ fontSize: '40px', }}>
-                                Bored Ape Yacht Club
+                                {User ? User.name : "Bored Ape Yacht Club"}
                             </p>
                         </div>
 
@@ -165,7 +186,7 @@ export default function Profile() {
 
                         <div className={`col-md-5 ${style.yellowBorder}`}>
                             <p style={{ fontSize: '17px', color: '#A0A0A0', textAlign: 'justify' }}>
-                                The Bored Ape Yacht Club is a collection of 10,000 unique Bored Ape NFTs — unique digital collectibles living on
+                                {User ? User.desc : "The Bored Ape Yacht Club is a collection of 10,000 unique Bored Ape NFTs — unique digital collectibles living on"}
                             </p>
                         </div>
 
@@ -175,7 +196,7 @@ export default function Profile() {
 
                             <div className={`row justify-content-between`}>
                                 <div className={`col-md-3 p-0 ${style.blueBorder}`}>
-                                    <button className={`btn py-md-2 ${style.btnProfileOpt}`}>Edit Profile</button>
+                                    <button className={`btn py-md-2 ${style.btnProfileOpt}`} onClick={() => { navigateToSettings(context.account.address) }}>Edit Profile</button>
                                 </div>
 
                                 <div className={`col-md-2 p-0 ${style.blueBorder}`}>
@@ -289,7 +310,7 @@ export default function Profile() {
                                                                 {(index % 3 == 0) && <div className='w-100'></div>}
 
                                                                 < ExploreCard colSize={3} custom={`mt-md-4 mx-md-5`
-                                                                } title={item.name} key = {index} desc={item.desc} copies={item.balance} price={''} owner={item.owner} tokenId={item.tokenId} endPoint={item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} clickBehavior={navigateToViewNftDetails} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                                                                } title={item.name} key={index} desc={item.desc} copies={item.balance} price={''} owner={item.owner} tokenId={item.tokenId} endPoint={item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} clickBehavior={navigateToViewNftDetails} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
                                                             </>
                                                         )
                                                     })

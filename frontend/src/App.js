@@ -75,11 +75,9 @@ function App() {
             </React.Fragment>}>
             </Route>
 
-            <Route path="/:userA/settings" element={<React.Fragment>
+            <Route path="/:user/settings" element={<React.Fragment>
               <Settings />
             </React.Fragment>}>
-
-
             </Route>
 
           </Routes>
