@@ -1,11 +1,12 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import {
     Box,
     // Card,
     // CardContent,
     Container,
     // Typography,
-    IconButton
+    IconButton,
+    Snackbar
 } from '@mui/material';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 
@@ -21,6 +22,9 @@ import Footer from '../Footer'
 import style from '../../stylesheets/homepage.module.css'
 import welcomeImg from '../icons/welcome.png'
 import Card from '../Card'
+import { useNavigate } from 'react-router-dom';
+import Context from "../../context/contractContext";
+import MuiAlert from '@mui/material/Alert';
 // import Carousel from 'react-material-ui-carousel'
 // import { Paper, Button } from '@mui/material'
 
@@ -39,12 +43,27 @@ function PriceCol(props) {
     )
 }
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 export default function Homepage() {
+
+    const context = useContext(Context);
+    const navigate = useNavigate();
+    const [open, setOpen] = React.useState(false);
+
+    const [state, setState] = React.useState({
+        vertical: 'top',
+        horizontal: 'center',
+    });
+    const { vertical, horizontal } = state;
 
     const carouselRef = useRef(null);
 
     const [showBackwardButton, setShowBackwardButton] = useState(false);
     const [showForwardButton, setShowForwardButton] = useState(true);
+
 
     useEffect(() => {
         carouselRef.current.addEventListener('scroll', handleScroll);
@@ -65,10 +84,31 @@ export default function Homepage() {
         carouselRef.current.scrollLeft += scrollOffset;
     };
 
+    const navigateTo = (endPoint) => {
+        if (context.account.address) {
+            navigate(`${endPoint}`, {});
+        }
+        else {
+            setOpen(true);
+        }
+    }
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
 
     return (
         <>
             <Navbar />
+
+            <Snackbar open={open} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical, horizontal }}>
+                <Alert severity="error" onClose={handleClose}>
+                    Please connect your wallet first!
+                </Alert>
+            </Snackbar>
 
             {/* Welcome section */}
             <section className={`container my-md-5`}>
@@ -84,13 +124,12 @@ export default function Homepage() {
 
                         <div className={`py-md-3`}>
                             <h6 style={{ fontSize: '20px', fontWeight: 'lighter' }}>
-                                Lorem ipsum dolor sit amet,
-                                cons <br />etetur sadipscing elitr, sed
+                                Explore the marketplace for crypto collectibles <br></br>and non-fungible tokens (NFTs).
                             </h6>
                         </div>
 
                         <div className={`m-0 p-0`}>
-                            <button className={`btn px-md-5 py-md-2 ${style.btnExplore}`}>Explore</button>
+                            <button className={`btn px-md-5 py-md-2 ${style.btnExplore}`} onClick={() => navigateTo("/explore/nfts")}>Explore</button>
                         </div>
 
                     </div>
@@ -125,13 +164,12 @@ export default function Homepage() {
 
                         <div className={`py-md-3`}>
                             <h6 style={{ fontSize: '20px', fontWeight: 'lighter' }}>
-                                Lorem ipsum dolor sit amet,
-                                cons <br />etetur sadipscing elitr, sed
+                                Buy, sell, and discover exclusive <br></br> digital items.
                             </h6>
                         </div>
 
                         <div className={`m-0 p-0`}>
-                            <button className={`btn px-md-5 py-md-2 ${style.btnExplorePlateform}`}>Explore Plateform</button>
+                            <button className={`btn px-md-5 py-md-2 ${style.btnExplorePlateform}`} onClick={() => navigateTo("/explore/nfts")}>Explore Plateform</button>
                         </div>
                     </div>
 
@@ -185,7 +223,7 @@ export default function Homepage() {
                                         ref={carouselRef}>
                                         <Card colSize={3} img={nft1} custom='me-4'></Card>
                                         <Card colSize={3} img={nft2} cardColor='#610652' custom='me-4' title={'Street Machine'}></Card>
-                                        <Card colSize={3} img={nft3} title= 'Away Machine' cardColor='#640A60' custom='me-4'></Card>
+                                        <Card colSize={3} img={nft3} title='Away Machine' cardColor='#640A60' custom='me-4'></Card>
                                         <Card colSize={3} img={nft1} custom='me-4'></Card>
                                         <Card colSize={3} img={nft2} cardColor='#610652' custom='me-4' title={'Street Machine'}></Card>
                                         <Card colSize={3} img={nft2} cardColor='#610652' custom='me-4' title={'Street Machine'}></Card>
@@ -260,7 +298,7 @@ export default function Homepage() {
                                 <tr >
                                     <td className={`${style.yellowBorder}`} style={{ verticalAlign: "top" }}>
                                         <div className={`${style.redBorder} mt-md-3`} style={{ display: "flex", justifyContent: "left", alignItems: "center" }}>
-                                            <img src={profileIcon2} alt=""  /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Azuki</span>
+                                            <img src={profileIcon2} alt="" /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Azuki</span>
                                         </div>
                                     </td>
 
@@ -279,7 +317,7 @@ export default function Homepage() {
                                 <tr >
                                     <td className={`${style.yellowBorder}`} style={{ verticalAlign: "top" }}>
                                         <div className={`${style.redBorder} mt-md-3`} style={{ display: "flex", justifyContent: "left", alignItems: "center" }}>
-                                            <img src={profileIcon3} alt=""  /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Otherdeed For Otherside</span>
+                                            <img src={profileIcon3} alt="" /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Otherdeed For Otherside</span>
                                         </div>
                                     </td>
 
@@ -312,7 +350,7 @@ export default function Homepage() {
                                 <tr >
                                     <td className={`${style.yellowBorder}`} style={{ verticalAlign: "top" }}>
                                         <div className={`${style.redBorder} mt-md-2`} style={{ display: "flex", justifyContent: "left", alignItems: "center" }}>
-                                            <img src={profileIcon1} alt=""  /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Perdgy Penguizs</span>
+                                            <img src={profileIcon1} alt="" /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Perdgy Penguizs</span>
                                         </div>
                                     </td>
 
@@ -331,7 +369,7 @@ export default function Homepage() {
                                 <tr >
                                     <td className={`${style.yellowBorder}`} style={{ verticalAlign: "top" }}>
                                         <div className={`${style.redBorder} mt-md-2`} style={{ display: "flex", justifyContent: "left", alignItems: "center" }}>
-                                            <img src={profileIcon2} alt=""  /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Azuki</span>
+                                            <img src={profileIcon2} alt="" /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Azuki</span>
                                         </div>
                                     </td>
 
@@ -350,7 +388,7 @@ export default function Homepage() {
                                 <tr >
                                     <td className={`${style.yellowBorder}`} style={{ verticalAlign: "top" }}>
                                         <div className={`${style.redBorder} mt-md-2`} style={{ display: "flex", justifyContent: "left", alignItems: "center" }}>
-                                            <img src={profileIcon3} alt=""  /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Otherdeed For Otherside</span>
+                                            <img src={profileIcon3} alt="" /> {'\u00A0'} {'\u00A0'} <span style={{ fontSize: '20px', fontWeight: 'bold' }}>Otherdeed For Otherside</span>
                                         </div>
                                     </td>
 
@@ -373,7 +411,8 @@ export default function Homepage() {
                     <div className={`w-100`}></div>
 
                     <div className={`col-md-2 my-md-5 ${style.yellowBorder}`}>
-                        <button className={`btn px-md-5 py-md-2 ${style.btnSeeMore}`}>See More</button>
+                        <button className={`btn px-md-5 py-md-2 ${style.btnSeeMore}`}
+                            onClick={() => navigateTo("/explore/nfts")}>See More</button>
                     </div>
                 </div>
             </section>

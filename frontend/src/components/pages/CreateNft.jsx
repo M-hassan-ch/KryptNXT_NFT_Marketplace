@@ -4,17 +4,14 @@ import Navbar from '../Navbar'
 import Footer from '../Footer'
 import style from '../../stylesheets/createNft.module.css'
 import polygonIcon from '../icons/polygonIcon.png'
-import InputAdornment from '@mui/material/InputAdornment';
-// import { OutlinedInput, InputAdornment, createTheme, ThemeProvider } from '@mui/material';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import CircularProgress from '@mui/material/CircularProgress';
 import Card from '../Card'
-
 import axios from "axios";
 import { useForm } from "react-hook-form";
 
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import shortenAddress from '../../utility/shortenAddress';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -223,6 +220,7 @@ export default function CreateNft() {
         reader.onload = () => {
             console.log("File uploaded");
             setSelectedImage(file);
+            console.log(file);
         };
 
         if (file) {
@@ -291,7 +289,7 @@ export default function CreateNft() {
 
                                                 <div className={`col-md-5 ms-md-3 pt-md-2 ${style.redBorder}`}>
                                                     <p className={`mb-1 ${style.blueBorder}`} style={{ fontSize: '20px', letterSpacing: '1px' }}>
-                                                        0x7E14a......09e4
+                                                        {shortenAddress(context.account.address)}
                                                     </p>
 
                                                     <p style={{ fontSize: '12px', fontWeight: 'bold' }} className={`mt-0 ${style.greyColor} ${style.blueBorder}`}>Polygon</p>
@@ -326,28 +324,6 @@ export default function CreateNft() {
                                             />
                                         </div>
 
-                                        {/* <div className={`col-12 mt-md-4 ${style.redBorder}`}>
-                                            <p className={`${style.formLabel}`}>Price</p>
-                                        </div>
-                                        <div className={`col-12 ${style.redBorder}`}>
-
-                                            <OutlinedInput
-                                                id="outlined-adornment-weight"
-                                                endAdornment={<InputAdornment position="end" className={`${style.greyColor}`} >MATIC</InputAdornment>}
-                                                aria-describedby="outlined-weight-helper-text"
-                                                inputProps={{
-                                                    'aria-label': 'weight',
-                                                }}
-                                                placeholder={'sds'}
-                                                sx={{ color: 'white', borderRadius: '12px' }}
-                                                className={` py-1 w-100 px-3 ${style.inputField}`}
-                                                value={price}
-                                                onChange={(event) => setPrice(event.target.value)}
-                                            />
-
-                                            {/* <input type="text" className={` py-3 w-100 px-3 ${style.inputField}`} placeholder="Price" id='price' /> // comment end
-                                        </div>  */}
-
                                         <div className={`col-12 mt-md-4 ${style.redBorder}`}>
                                             <p className={`${style.formLabel}`}>Uplaod File</p>
                                         </div>
@@ -379,29 +355,11 @@ export default function CreateNft() {
                                                 onChange={(event) => setCopies(event.target.value)} />
                                         </div>
 
-
-                                        { /* <div className={`col-12 mt-md-4 ${style.redBorder}`}>
-                                            <p className={`${style.formLabel}`}>Royalties</p>
-                                        </div>
-                                        <div className={`col-12 ${style.redBorder}`}>
-                                            <OutlinedInput
-                                                id="outlined-adornment-weight"
-                                                endAdornment={<InputAdornment position="end" sx={{ fontSize: '30rem' }} >%</InputAdornment>}
-                                                aria-describedby="outlined-weight-helper-text"
-                                                inputProps={{
-                                                    'aria-label': 'weight',
-                                                }}
-                                                placeholder={'Royalties'}
-                                                sx={{ color: 'white', borderRadius: '12px' }}
-                                                className={` py-1 w-100 px-3 ${style.inputField}`}
-                                            />
-                                        </div> */ }
-
                                         <div className={`col-12 mt-md-5 ${style.redBorder}`}>
 
                                             <button className={`btn px-md-5 py-md-2 ${style.btnCreateNft}`} type="submit" disabled={IsLoading}>
                                                 {
-                                                    IsLoading ? <CircularProgress color="secondary" /> : "Create"
+                                                    IsLoading ? <CircularProgress color="secondary" /> : "Create NFT"
                                                 }
                                             </button>
 
@@ -419,7 +377,7 @@ export default function CreateNft() {
                                             <p style={{ fontSize: "36px", fontWeight: 'bold', letterSpacing: '1px' }}>Preview</p>
 
                                         </div>
-                                        <Card colSize={9} custom={`ms-md-3`} title={title} desc={desc} copies={copies} price={price} img={selectedImage} cardColor={'#570157'}></Card>
+                                        <Card colSize={9} custom={`ms-md-3`} title={title} desc={desc} copies={copies} price={NaN} img={selectedImage && URL.createObjectURL(selectedImage)} cardColor={'#570157'}></Card>
                                     </div>
                                 </div>
 

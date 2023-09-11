@@ -43,13 +43,11 @@ export default function Navbar(props) {
   const navigate = useNavigate();
 
   const navigate_homePage = () => {
-    console.log('iam clicked');
     navigate('/', {});
   }
 
   const navigateTo = (endPoint) => {
     if (context.account.address) {
-      console.log('iam called');
       navigate(`${endPoint}`, {});
     }
     else {
@@ -59,6 +57,12 @@ export default function Navbar(props) {
 
   return (
     <>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical, horizontal }}>
+        <Alert severity="error" onClose={handleClose} sx={{ width: '100%' }}>
+          Please connect your wallet first!
+        </Alert>
+      </Snackbar>
+
       <header className={`container-fluid py-md-2 `} style={{ background: props.background ? props.background : 'rgba(4, 4, 4, 0.5)' }}>
         <div className={`row justify-content-between align-items-center`}>
 
@@ -73,20 +77,15 @@ export default function Navbar(props) {
                 {/* <a href="" class={`btn-block ${style.redBorder}`}>SEARCH BAR</a> */}
               </div>
 
-              <div className={`col-md-5 ${style.blueBorder} p-0`}>
+              <div className={`col-md-5 ${style.blueBorder} p-0 ms-3`}>
                 <nav>
                   <ul>
 
-                    <Snackbar open={open} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical, horizontal }}>
-                      <Alert severity="error" onClose={handleClose} sx={{ width: '100%' }}>
-                        Please connect your wallet first!
-                      </Alert>
-                    </Snackbar>
-
-                    <li ><Link to = "/explore/nfts">Explore</Link></li>
+                    {/* <li ><Link to = {() => navigateTo("/explore")}>Explore</Link></li> */}
+                    <li ><a onClick={() => navigateTo("/explore/nfts")}>Explore</a></li>
                     <li ><a onClick={() => navigateTo("/createNft")}>Create</a></li>
                     <li ><a onClick={() => navigateTo("/profile")}>MY NFTs</a></li>
-                    
+
                     {/* <li ><Link to="/explore/nfts">Explore</Link></li> */}
                     {/* <li><a to="/createNft">Create</a></li> */}
                     {/* <li><a to="/profile/1">MY NFTs</a></li> */}
