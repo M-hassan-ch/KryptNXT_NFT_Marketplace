@@ -116,7 +116,6 @@ export default function ExploreNfts() {
                                         return (
                                             <>
                                                 {(index % 3 == 0) && <div className='w-100'></div>}
-                                                <div className='w-100'></div>
                                                 < BuyingCard colSize={3} custom={`mt-md-4 mx-md-5`
                                                 } obj={item} key={index} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
                                             </>
