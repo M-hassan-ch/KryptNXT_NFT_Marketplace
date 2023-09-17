@@ -82,9 +82,9 @@ export default function Navbar(props) {
                   <ul>
 
                     {/* <li ><Link to = {() => navigateTo("/explore")}>Explore</Link></li> */}
-                    <li ><a onClick={() => navigateTo("/explore/nfts")}>Explore</a></li>
-                    <li ><a onClick={() => navigateTo("/createNft")}>Create</a></li>
-                    <li ><a onClick={() => navigateTo("/profile")}>MY NFTs</a></li>
+                    <li style={{cursor:'pointer'}}><a onClick={() => navigateTo("/explore/nfts")}>Explore</a></li>
+                    <li style={{cursor:'pointer'}}><a onClick={() => navigateTo("/createNft")}>Create</a></li>
+                    <li style={{cursor:'pointer'}}><a onClick={() => navigateTo("/profile")}>MY NFTs</a></li>
 
                     {/* <li ><Link to="/explore/nfts">Explore</Link></li> */}
                     {/* <li><a to="/createNft">Create</a></li> */}

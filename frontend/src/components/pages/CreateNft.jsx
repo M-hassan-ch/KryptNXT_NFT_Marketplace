@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import Context from "../../context/contractContext";
 import Navbar from '../Navbar'
 import Footer from '../Footer'
@@ -8,6 +8,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Card from '../Card'
 import axios from "axios";
 import { useForm } from "react-hook-form";
+import { useNavigate } from 'react-router-dom';
 
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
@@ -19,11 +20,13 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 export default function CreateNft() {
     const context = useContext(Context);
+    const navigate = useNavigate();
     const [dragging, setDragging] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
 
     const [title, setTitle] = useState('');
     const [desc, setDesc] = useState('');
+    const [Properties, setProperties] = useState('');
     const [copies, setCopies] = useState('');
     const [price, setPrice] = useState('');
     const [IsLoading, setIsLoading] = useState(false);
@@ -81,6 +84,7 @@ export default function CreateNft() {
                 const metaData = JSON.stringify({
                     name: document.getElementById("name").value,
                     description: document.getElementById("desc").value,
+                    properties: document.getElementById("properties").value,
                     data: filehash,
                 });
 
@@ -149,11 +153,13 @@ export default function CreateNft() {
             else if (desc == "") {
                 setFormValidationError({ open: true, msg: "Description cannot be empty" });
             }
+            else if (Properties == "") {
+                setFormValidationError({ open: true, msg: "Properties cannot be empty" });
+            }
             else if (selectedImage == null) {
                 setFormValidationError({ open: true, msg: "No file uploaded" });
             }
             else {
-                console.log("fine");
                 try {
                     setIsLoading(true);
                     let metaHash = await uploadDataToIPFS();
@@ -242,6 +248,17 @@ export default function CreateNft() {
         setOpenSuccessMsg(false);
     };
 
+    function navigateToHomepage() {
+        navigate(`/`);
+    }
+
+    useEffect(() => {
+        if (!context?.account?.address) {
+            navigateToHomepage();
+        }
+    }, [context?.account?.address])
+
+
     // const handleFileInput = (event) => {
     //     const files = Array.from(event.target.files);
     //     console.log(files);
@@ -289,7 +306,7 @@ export default function CreateNft() {
 
                                                 <div className={`col-md-5 ms-md-3 pt-md-2 ${style.redBorder}`}>
                                                     <p className={`mb-1 ${style.blueBorder}`} style={{ fontSize: '20px', letterSpacing: '1px' }}>
-                                                        {shortenAddress(context.account.address)}
+                                                        {context?.account?.address && shortenAddress(context.account.address)}
                                                     </p>
 
                                                     <p style={{ fontSize: '12px', fontWeight: 'bold' }} className={`mt-0 ${style.greyColor} ${style.blueBorder}`}>Polygon</p>
@@ -345,6 +362,17 @@ export default function CreateNft() {
                                                     style={{ borderRadius: '50px' }}
                                                 />
                                             </div>
+                                        </div>
+
+                                        <div className={`col-12 mt-md-4 ${style.redBorder}`}>
+                                            <p className={`${style.formLabel}`}>Properties</p>
+                                        </div>
+                                        <div className={`col-12 ${style.redBorder}`}>
+                                            <textarea className={` py-3 w-100 px-3 ${style.inputField}`}
+                                                rows={4} // Specify the number of visible rows
+                                                placeholder="Properties" id='properties' value={Properties}
+                                                onChange={(event) => setProperties(event.target.value)}
+                                            />
                                         </div>
 
                                         <div className={`col-12 mt-md-4 ${style.redBorder}`}>

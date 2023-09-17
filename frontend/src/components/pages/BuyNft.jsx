@@ -9,7 +9,7 @@ import { Typography } from '@mui/material';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import formatAddr from '../../utility/shortenAddress'
 import Context from "../../context/contractContext";
-
+import Tooltip from '@mui/material/Tooltip';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -105,29 +105,40 @@ export default function BuyNft(props) {
 
     const buy = async () => {
         try {
+            let stringValue = Number(state.props.obj.price);
+            var formattedValue = stringValue.toFixed(18);
+            // console.log('Formatted value ', formattedValue);
+
             const accBalance = await context.Provider.provider.getBalance(context.account.address);
+
             if (context.account.address == state.props.obj.seller) {
                 setFormValidationError({ open: true, msg: "Cannot buy your own item" });
             }
-            else if (Number(accBalance) < Number(ethers.parseEther(`${state.props.obj.price}`))) {
+            else if (Number(accBalance) < Number(ethers.parseEther(`${formattedValue}`))) {
                 setFormValidationError({ open: true, msg: "Insufficient balance" });
             }
             else {
                 setIsLoading(true);
 
-                const receipt = await context.contractFunction.buyRecord(state.props.obj.recordId, state.props.obj.price);
-                const txReceipt = await context.Provider.provider.waitForTransaction(receipt?.hash);
+                const receipt = await context.contractFunction.buyRecord(state.props.obj.recordId, formattedValue);
 
-                if (txReceipt) {
-                    setIsLoading(false);
-                    setOpenSuccessMsg(true);
+                if (receipt){
+                    const txReceipt = await context.Provider.provider.waitForTransaction(receipt?.hash);
 
-                    setTimeout(() => {
-                        navigateToViewBoughtRecord(state.props.obj.recordId)
-                    }, 2000)
+                    if (txReceipt) {
+                        setIsLoading(false);
+                        setOpenSuccessMsg(true);
+    
+                        setTimeout(() => {
+                            navigateToViewBoughtRecord(state.props.obj.recordId)
+                        }, 2000)
+                    }
+                    else {
+                        throw "tx obj not recieved"
+                    }
                 }
-                else {
-                    throw "tx obj not recieved"
+                else{
+                    throw "transaction error"
                 }
             }
         } catch (error) {
@@ -193,8 +204,9 @@ export default function BuyNft(props) {
                                             <p style={{ fontSize: '12px', fontWeight: 'bold' }} className={`m-0 ${style.greyColor} ${style.blueBorder}`}>Current owner</p>
 
                                             <p className={` ${style.blueBorder}`} style={{ fontSize: '20px', letterSpacing: '1px', fontWeight: 'bold' }}>
-                                                {formatAddr(state.props.obj.seller)}
-                                                {/* 0x7E14a......09e4 */}
+                                                <Tooltip title={`${state.props.obj.seller}`}>
+                                                    {formatAddr(state.props.obj.seller)}
+                                                </Tooltip>
                                             </p>
                                         </div>
 
@@ -208,7 +220,11 @@ export default function BuyNft(props) {
                                         <div className={`col-md-4 ${style.redBorder}`}>
                                             <p className={`m-0 ${style.greyColor}`} style={{ color: '#ADADAD', fontWeight: 'bold', fontSize: '18px' }}> Price </p>
 
-                                            <p className={`m-0 ${style.textOverflow}`} style={{ fontWeight: 'bold', fontSize: '22px', letterSpacing: '1px' }}> {state.props.obj.price} </p>
+                                            <p className={`m-0 ${style.textOverflow}`} style={{ fontWeight: 'bold', fontSize: '22px', letterSpacing: '1px' }}>
+                                                <Tooltip title={`${state.props.obj.price}`}>
+                                                    {state.props.obj.price}
+                                                </Tooltip>
+                                            </p>
 
                                             <p className={`m-0 ${style.greyColor}`} style={{ color: '#777373', fontWeight: 'bold', fontSize: '10px' }}> MATIC </p>
 
@@ -217,7 +233,11 @@ export default function BuyNft(props) {
                                         <div className={`col-md-4 ${style.redBorder}`}>
                                             <p className={`m-0 ${style.greyColor}`} style={{ color: '#ADADAD', fontWeight: 'bold', fontSize: '18px' }}> Copies </p>
 
-                                            <p className={`m-0 ${style.textOverflow}`} style={{ fontWeight: 'bold', fontSize: '22px', letterSpacing: '1px' }}> {state.props.obj.copies} </p>
+                                            <p className={`m-0 ${style.textOverflow}`} style={{ fontWeight: 'bold', fontSize: '22px', letterSpacing: '1px' }}>
+                                                <Tooltip title={`${state.props.obj.copies}`}>
+                                                    {state.props.obj.copies}
+                                                </Tooltip>
+                                            </p>
                                         </div>
 
 
@@ -258,13 +278,6 @@ export default function BuyNft(props) {
                                                 color: '#FFFF',
                                             },
                                         }} />
-                                        <Tab label="History" sx={{
-                                            color: '#FFFF',
-                                            bgcolor: value === 2 ? 'rgba(15, 7, 21, 0.67)' : 'inherit',
-                                            '&.Mui-selected': {
-                                                color: '#FFFF',
-                                            },
-                                        }} />
                                     </Tabs>
                                 </Box>
                                 <CustomTabPanel value={value} index={0}>
@@ -277,10 +290,13 @@ export default function BuyNft(props) {
                                     </p>
                                 </CustomTabPanel>
                                 <CustomTabPanel value={value} index={1}>
-                                    Item Two
-                                </CustomTabPanel>
-                                <CustomTabPanel value={value} index={2}>
-                                    Item Three
+                                    <p style={{ textAlign: 'justify' }}>
+                                        {
+                                            value == 1 ?
+                                                state.props.obj.properties :
+                                                ''
+                                        }
+                                    </p>
                                 </CustomTabPanel>
                             </Box>
                         </div>

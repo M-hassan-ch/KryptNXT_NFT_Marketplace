@@ -221,13 +221,16 @@ export default function Homepage() {
                                         }
                                     }}
                                         ref={carouselRef}>
-                                        <Card colSize={3} img={nft1} custom='me-4'></Card>
-                                        <Card colSize={3} img={nft2} cardColor='#610652' custom='me-4' title={'Street Machine'}></Card>
-                                        <Card colSize={3} img={nft3} title='Away Machine' cardColor='#640A60' custom='me-4'></Card>
-                                        <Card colSize={3} img={nft1} custom='me-4'></Card>
-                                        <Card colSize={3} img={nft2} cardColor='#610652' custom='me-4' title={'Street Machine'}></Card>
-                                        <Card colSize={3} img={nft2} cardColor='#610652' custom='me-4' title={'Street Machine'}></Card>
-                                        <Card colSize={3} img={nft2} cardColor='#610652' custom='me-4' title={'Street Machine'}></Card>
+                                        <Card colSize={3} title ={`Bore Ape`} desc = {'Digital art tokens stored on blockchain, NFTs are unique collectibles and assets for the modern age'} price = {29} copies = {200} img={nft1} custom='me-4'></Card>
+                                        
+                                        <Card colSize={3} img={nft2} cardColor='#610652' custom='me-4' title={'Street Machine'} desc = {'Non-fungible tokens represent ownership of digital items, from art to virtual real estate.'} price = {123} copies = {739} ></Card>
+                                        <Card colSize={3} img={nft3} title='Away Machine' cardColor='#640A60' custom='me-4' desc = {'Blockchain-backed NFTs: Rare, indivisible digital assets, revolutionizing ownership in the digital world.'} price = {123} copies = {632} ></Card> 
+
+                                        <Card colSize={3} img={nft2} desc = {'Digital art tokens stored on blockchain, NFTs are unique collectibles and assets for the modern age'} price = {321} copies = {890} custom='me-4' title={'Street Machine'}></Card>
+                                        
+                                        <Card colSize={3} img={nft2} cardColor='#610652' custom='me-4' title={'Street Machine'} desc = {'Blockchain-backed NFTs: Rare, indivisible digital assets, revolutionizing ownership in the digital world.'} price = {54} copies = {2020} ></Card>
+                                        
+                                        <Card colSize={3} img={nft2} cardColor='#610652' custom='me-4' title={'Street Machine'} desc = {'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.'} price = {29} copies = {200} ></Card>
 
                                         {/* Add more cards as needed */}
                                     </Box>

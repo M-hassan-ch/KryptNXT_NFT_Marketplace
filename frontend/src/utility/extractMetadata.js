@@ -7,6 +7,7 @@ let extract = async (uri) => {
         return {
             name : res.data.name,
             desc : res.data.description,
+            properties : res.data.properties,
             imgUri : res.data.data
         }
         

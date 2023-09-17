@@ -81,7 +81,7 @@ export default function Profile() {
             }
         }
         loadUserData();
-    }, [])
+    }, [context?.account?.address])
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -103,8 +103,16 @@ export default function Profile() {
         navigate(`/soldRecord/${recordId}`);
     }
 
+    function navigateToCreateNFT() {
+        navigate(`/createNft`);
+    }
+
     function navigateToSettings(user) {
         navigate(`/${user}/settings`);
+    }
+
+    function navigateToHomepage() {
+        navigate(`/`);
     }
 
     useEffect(() => {
@@ -153,7 +161,11 @@ export default function Profile() {
         loadData();
     }, [value, context?.account?.address])
 
-
+    useEffect(() => {
+        if (!context?.account?.address) {
+            navigateToHomepage();
+        }
+    }, [context?.account?.address])
 
     return (
         <>
@@ -178,7 +190,7 @@ export default function Profile() {
                     <div className={`row`}>
                         <div className={`col-md-5 ${style.yellowBorder}`}>
                             <p style={{ fontSize: '40px', }}>
-                                {User ? User.name : "Bored Ape Yacht Club"}
+                                {User ? User.name : "Unnamed"}
                             </p>
                         </div>
 
@@ -186,7 +198,7 @@ export default function Profile() {
 
                         <div className={`col-md-5 ${style.yellowBorder}`}>
                             <p style={{ fontSize: '17px', color: '#A0A0A0', textAlign: 'justify' }}>
-                                {User ? User.desc : "The Bored Ape Yacht Club is a collection of 10,000 unique Bored Ape NFTs — unique digital collectibles living on"}
+                                {User ? User.desc : "No Description"}
                             </p>
                         </div>
 
@@ -200,11 +212,11 @@ export default function Profile() {
                                 </div>
 
                                 <div className={`col-md-2 p-0 ${style.blueBorder}`}>
-                                    <button className={`btn py-md-2 ${style.btnProfileOpt}`}>Sell</button>
+                                    <button className={`btn py-md-2 ${style.btnProfileOpt}`}> <a href="#sell" className={`${style.sell}`} style={{fontWeight:'normal'}}>Sell</a></button>
                                 </div>
 
                                 <div className={`col-md-2 p-0 ${style.blueBorder}`}>
-                                    <button className={`btn py-md-2 ${style.btnProfileOpt}`}><IosShareIcon /></button>
+                                    <button className={`btn py-md-2 ${style.btnProfileOpt}`} onClick={navigateToCreateNFT}><IosShareIcon /></button>
                                 </div>
 
                                 <div className={`col-md-2 p-0 ${style.blueBorder}`}>
@@ -296,7 +308,7 @@ export default function Profile() {
                                     </div>
 
                                     {/* cards */}
-                                    <div className={`row mt-md-4 ${style.yellowBorder} justify-content-ev
+                                    <div id='sell' className={`row mt-md-4 ${style.yellowBorder} justify-content-ev
                                     `}>
 
                                         {

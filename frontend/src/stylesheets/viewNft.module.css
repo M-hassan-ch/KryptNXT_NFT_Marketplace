@@ -54,3 +54,26 @@
     background: transparent;
     border: 1px solid white;
 }
+
+td {
+    font-weight: 100;
+}
+
+th {
+    font-weight: bolder;
+    color: white;
+}
+
+table.table {
+    width: 100%;
+    height: 300px;
+    /* Adjust the height as needed */
+    overflow: auto;
+    /* Enable both horizontal and vertical scrolling */
+}
+
+
+td {
+    word-wrap: break-word;
+    max-width: 100px;
+}

@@ -9,7 +9,7 @@ import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlin
 import formatAddr from '../../utility/shortenAddress'
 import Context from "../../context/contractContext";
 import Backdrop from '@mui/material/Backdrop';
-
+import Tooltip from '@mui/material/Tooltip';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -124,18 +124,23 @@ export default function ViewMarkedRecord() {
                 setIsInProgress(true);
 
                 const receipt = await context.contractFunction.removeFromSale(Record._recordId);
-                const txReceipt = await context.Provider.provider.waitForTransaction(receipt?.hash);
+                if (receipt){
+                    const txReceipt = await context.Provider.provider.waitForTransaction(receipt?.hash);
 
-                if (txReceipt) {
-                    setIsInProgress(false);
-                    setOpenSuccessMsg(true);
-                    setTimeout(() => {
-                        navigateToProfile()
-                    }, 2000)
+                    if (txReceipt) {
+                        setIsInProgress(false);
+                        setOpenSuccessMsg(true);
+                        setTimeout(() => {
+                            navigateToProfile()
+                        }, 2000)
+                    }
+                }
+                else{
+                    throw "Something went wrong";
                 }
             }
         } catch (error) {
-            console.log("Error while calling listNft()");
+            console.log("Error while calling remove from sale");
             console.log(error);
             setFormValidationError({ open: true, msg: "Something went wrong" });
             setIsInProgress(false);
@@ -234,7 +239,10 @@ export default function ViewMarkedRecord() {
                                                         <p style={{ fontSize: '12px', fontWeight: 'bold' }} className={`m-0 ${style.greyColor} ${style.blueBorder}`}>Current owner</p>
 
                                                         <p className={` ${style.blueBorder}`} style={{ fontSize: '20px', letterSpacing: '1px', fontWeight: 'bold' }}>
-                                                            {formatAddr(Record.seller)}
+                                                            <Tooltip title={`${Record.seller}`}>
+                                                                {formatAddr(Record.seller)}
+                                                            </Tooltip>
+
                                                             {/* 0x7E14a......09e4 */}
                                                         </p>
                                                     </div>
@@ -249,7 +257,11 @@ export default function ViewMarkedRecord() {
                                                     <div className={`col-md-4 ${style.redBorder}`}>
                                                         <p className={`m-0 ${style.greyColor}`} style={{ color: '#ADADAD', fontWeight: 'bold', fontSize: '18px' }}> Price </p>
 
-                                                        <p className={`m-0 ${style.textOverflow}`} style={{ fontWeight: 'bold', fontSize: '22px', letterSpacing: '1px' }}> {Record.price} </p>
+                                                        <p className={`m-0 ${style.textOverflow}`} style={{ fontWeight: 'bold', fontSize: '22px', letterSpacing: '1px' }}>
+                                                            <Tooltip title={`${Record.price}`}>
+                                                                {Record.price}
+                                                            </Tooltip>
+                                                        </p>
 
                                                         <p className={`m-0 ${style.greyColor}`} style={{ color: '#777373', fontWeight: 'bold', fontSize: '10px' }}> MATIC </p>
 
@@ -258,7 +270,11 @@ export default function ViewMarkedRecord() {
                                                     <div className={`col-md-4 ${style.redBorder}`}>
                                                         <p className={`m-0 ${style.greyColor}`} style={{ color: '#ADADAD', fontWeight: 'bold', fontSize: '18px' }}> Copies </p>
 
-                                                        <p className={`m-0 ${style.textOverflow}`} style={{ fontWeight: 'bold', fontSize: '22px', letterSpacing: '1px' }}> {Record.copies} </p>
+                                                        <p className={`m-0 ${style.textOverflow}`} style={{ fontWeight: 'bold', fontSize: '22px', letterSpacing: '1px' }}>
+                                                            <Tooltip title={`${Record.copies}`}>
+                                                                {Record.copies}
+                                                            </Tooltip>
+                                                        </p>
                                                     </div>
 
 
@@ -299,13 +315,6 @@ export default function ViewMarkedRecord() {
                                                             color: '#FFFF',
                                                         },
                                                     }} />
-                                                    <Tab label="History" sx={{
-                                                        color: '#FFFF',
-                                                        bgcolor: value === 2 ? 'rgba(15, 7, 21, 0.67)' : 'inherit',
-                                                        '&.Mui-selected': {
-                                                            color: '#FFFF',
-                                                        },
-                                                    }} />
                                                 </Tabs>
                                             </Box>
                                             <CustomTabPanel value={value} index={0}>
@@ -318,10 +327,13 @@ export default function ViewMarkedRecord() {
                                                 </p>
                                             </CustomTabPanel>
                                             <CustomTabPanel value={value} index={1}>
-                                                Item Two
-                                            </CustomTabPanel>
-                                            <CustomTabPanel value={value} index={2}>
-                                                Item Three
+                                                <p style={{ textAlign: 'justify' }}>
+                                                    {
+                                                        value == 1 ?
+                                                            Record.properties :
+                                                            ''
+                                                    }
+                                                </p>
                                             </CustomTabPanel>
                                         </Box>
                                     </div>

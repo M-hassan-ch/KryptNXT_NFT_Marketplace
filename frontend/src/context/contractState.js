@@ -328,6 +328,7 @@ let ContractState = (props) => {
             // // alert('error while minting token');
             console.log('error while buying record');
             console.log(error);
+            return undefined;
         }
     }
 
@@ -342,6 +343,7 @@ let ContractState = (props) => {
             // // alert('error while minting token');
             console.log('error while removing record');
             console.log(error);
+            return undefined;
         }
     }
 
