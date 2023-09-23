@@ -65,7 +65,13 @@ export default function Profile() {
 
     const [User, setUser] = React.useState(null);
     const [value, setValue] = React.useState(0);
+
     const [Objects, setObjects] = React.useState([]);
+
+    const [SearchedObjects, setSearchedObjects] = React.useState([]);
+    const [ShowSearch, setShowSearch] = React.useState(false);
+    const [SearchQuery, setSearchQuery] = React.useState("");
+
     const [IsLoading, setIsLoading] = useState(false);
     const context = useContext(Context);
 
@@ -114,6 +120,11 @@ export default function Profile() {
     function navigateToHomepage() {
         navigate(`/`);
     }
+
+    const handleInputChange = (event) => {
+        event.preventDefault();
+        setSearchQuery(event.target.value);
+    };
 
     useEffect(() => {
         const loadData = async () => {
@@ -167,6 +178,78 @@ export default function Profile() {
         }
     }, [context?.account?.address])
 
+    useEffect(() => {
+        if (SearchQuery == '') {
+            setShowSearch(false);
+        }
+    }, [SearchQuery])
+
+
+    async function search(event) {
+        event.preventDefault();
+
+        if (Objects.length > 0 && SearchQuery != '') {
+            console.log('searching');
+            const regexPattern = new RegExp(SearchQuery.replace(/\s+/g, "\\s*"), "i");
+
+            const searchResults = Objects.filter((item) => regexPattern.test(item.name.replace(/\s+/g, " ")));
+
+            // console.log(searchResults);
+            // console.log(SearchQuery);
+            setShowSearch(true);
+            setSearchedObjects(searchResults);
+        }
+    }
+
+    function SearchBar() {
+        return (
+            <div className={`row ${style.yellowBorder} mt-md-3 justify-content-between`}>
+                <div className={`col-md-2 ${style.blueBorder}`}>
+                    <Button className={`px-md-4 py-md-2 w-100 ${style.btnFilter}`} sx={{ background: 'rgba(142, 142, 142, 0.12)', fontSize: '18px', fontWeight: 'bold', borderRadius: '8px' }} variant="contained" startIcon={<ArrowBackIosIcon />}>
+                        Filters
+                    </Button>
+                </div>
+
+                <div className={`col-md-7 ${style.blueBorder}`}>
+                    <TextField
+                        value={SearchQuery}
+                        onChange={handleInputChange}
+                        placeholder="Enter your search"
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <IconButton sx={{ color: 'white' }} onClick={(event) => { search(event) }}>
+                                        <Search />
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                            sx: {
+                                '& input': {
+                                    color: 'white',
+                                },
+                                '& input::placeholder': {
+                                    color: 'white',
+                                },
+                                '& input:focus': {
+                                    color: 'white',
+                                },
+                            },
+                        }}
+                        sx={{ background: 'rgba(142, 142, 142, 0.12)', fontSize: '18px', fontWeight: 'bold', borderRadius: '12px', height: '49px' }}
+                        className={`w-100`}
+                    />
+                </div>
+
+                <div className={`col-md-2 ${style.blueBorder}`}>
+                    <Button className={`px-md-4 py-md-2 w-100 ${style.btnFilter}`} sx={{ background: 'rgba(142, 142, 142, 0.12)', fontSize: '18px', fontWeight: 'bold', borderRadius: '8px' }} variant="contained" endIcon={<ExpandMoreIcon fontSize={'50px'} />}>
+                        Trending
+                    </Button>
+                </div>
+
+            </div>
+        )
+    }
+
     return (
         <>
             <Navbar background={'#040404'} />
@@ -212,7 +295,7 @@ export default function Profile() {
                                 </div>
 
                                 <div className={`col-md-2 p-0 ${style.blueBorder}`}>
-                                    <button className={`btn py-md-2 ${style.btnProfileOpt}`}> <a href="#sell" className={`${style.sell}`} style={{fontWeight:'normal'}}>Sell</a></button>
+                                    <button className={`btn py-md-2 ${style.btnProfileOpt}`}> <a href="#sell" className={`${style.sell}`} style={{ fontWeight: 'normal' }}>Sell</a></button>
                                 </div>
 
                                 <div className={`col-md-2 p-0 ${style.blueBorder}`}>
@@ -263,7 +346,6 @@ export default function Profile() {
                                     </Tabs>
                                 </Box>
                                 <CustomTabPanel value={value} index={0}>
-
                                     <div className={`row ${style.yellowBorder} mt-md-3 justify-content-between`}>
                                         <div className={`col-md-2 ${style.blueBorder}`}>
                                             <Button className={`px-md-4 py-md-2 w-100 ${style.btnFilter}`} sx={{ background: 'rgba(142, 142, 142, 0.12)', fontSize: '18px', fontWeight: 'bold', borderRadius: '8px' }} variant="contained" startIcon={<ArrowBackIosIcon />}>
@@ -273,11 +355,13 @@ export default function Profile() {
 
                                         <div className={`col-md-7 ${style.blueBorder}`}>
                                             <TextField
+                                                value={SearchQuery}
+                                                onChange={handleInputChange}
                                                 placeholder="Enter your search"
                                                 InputProps={{
                                                     startAdornment: (
                                                         <InputAdornment position="start">
-                                                            <IconButton sx={{ color: 'white' }}>
+                                                            <IconButton sx={{ color: 'white' }} onClick={(event) => { search(event) }}>
                                                                 <Search />
                                                             </IconButton>
                                                         </InputAdornment>
@@ -313,19 +397,37 @@ export default function Profile() {
 
                                         {
                                             IsLoading ? <CircularProgress className='mx-auto' color="secondary" /> :
-                                                Objects.length === 0 ?
-                                                    <h2 className='mt-5' style={{ textAlign: 'center', letterSpacing: '1px' }}> No record found</h2>
-                                                    : Objects.map((item, index) => {
+                                                ShowSearch == false ?
+                                                    Objects.length === 0 ?
+                                                        <h2 className='mt-5' style={{ textAlign: 'center', letterSpacing: '1px' }}> No record found</h2>
+                                                        :
+                                                        Objects.map((item, index) => {
 
-                                                        return (
-                                                            <>
-                                                                {(index % 3 == 0) && <div className='w-100'></div>}
+                                                            return (
+                                                                <>
+                                                                    {(index % 3 == 0) && <div className='w-100'></div>}
 
-                                                                < ExploreCard colSize={3} custom={`mt-md-4 mx-5`
-                                                                } title={item.name} key={index} desc={item.desc} copies={item.balance} price={''} owner={item.owner} tokenId={item.tokenId} endPoint={item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} clickBehavior={navigateToViewNftDetails} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
-                                                            </>
-                                                        )
-                                                    })
+                                                                    < ExploreCard colSize={3} custom={`mt-md-4 mx-5`
+                                                                    } title={item.name} key={index} desc={item.desc} copies={item.balance} price={''} owner={item.owner} tokenId={item.tokenId} endPoint={item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} clickBehavior={navigateToViewNftDetails} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                                                                </>
+                                                            )
+                                                        })
+                                                    :
+                                                    SearchedObjects.length === 0 ?
+                                                        <h2 className='mt-5' style={{ textAlign: 'center', letterSpacing: '1px' }}> No record found in search</h2>
+                                                        :
+                                                        SearchedObjects.map((item, index) => {
+
+                                                            return (
+                                                                <>
+                                                                    {(index % 3 == 0) && <div className='w-100'></div>}
+
+                                                                    < ExploreCard colSize={3} custom={`mt-md-4 mx-5`
+                                                                    } title={item.name} key={index} desc={item.desc} copies={item.balance} price={''} owner={item.owner} tokenId={item.tokenId} endPoint={item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} clickBehavior={navigateToViewNftDetails} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} />
+                                                                </>
+                                                            )
+                                                        })
+
                                         }
 
                                     </div>
@@ -340,11 +442,13 @@ export default function Profile() {
 
                                         <div className={`col-md-7 ${style.blueBorder}`}>
                                             <TextField
+                                                value={SearchQuery}
+                                                onChange={handleInputChange}
                                                 placeholder="Enter your search"
                                                 InputProps={{
                                                     startAdornment: (
                                                         <InputAdornment position="start">
-                                                            <IconButton sx={{ color: 'white' }}>
+                                                            <IconButton sx={{ color: 'white' }} onClick={(event) => { search(event) }}>
                                                                 <Search />
                                                             </IconButton>
                                                         </InputAdornment>
@@ -380,18 +484,33 @@ export default function Profile() {
 
                                         {
                                             IsLoading ? <CircularProgress className='mx-auto' color="secondary" /> :
-                                                Objects.length === 0 ?
-                                                    <h2 className='mt-5' style={{ textAlign: 'center', letterSpacing: '1px' }}> No record found</h2>
-                                                    : Objects.map((item, index) => {
-                                                        return (
-                                                            <>
-                                                                {(index % 3 == 0) && <div className='w-100'></div>}
+                                                ShowSearch == false ?
+                                                    Objects.length === 0 ?
+                                                        <h2 className='mt-5' style={{ textAlign: 'center', letterSpacing: '1px' }}> No record found</h2>
+                                                        : Objects.map((item, index) => {
+                                                            return (
+                                                                <>
+                                                                    {(index % 3 == 0) && <div className='w-100'></div>}
 
-                                                                < ExploreCard key={index} colSize={3} custom={`mt-md-4 mx-md-5`
-                                                                } title={item.name} desc={item.desc} copies={item.copies} price={''} owner={item.owner} tokenId={item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} clickBehavior={navigateToMarkedRecord} endPoint={item.recordId} />
-                                                            </>
-                                                        )
-                                                    })
+                                                                    < ExploreCard key={index} colSize={3} custom={`mt-md-4 mx-md-5`
+                                                                    } title={item.name} desc={item.desc} copies={item.copies} price={''} owner={item.owner} tokenId={item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} clickBehavior={navigateToMarkedRecord} endPoint={item.recordId} />
+                                                                </>
+                                                            )
+                                                        })
+                                                    :
+                                                    SearchedObjects.length === 0 ?
+                                                        <h2 className='mt-5' style={{ textAlign: 'center', letterSpacing: '1px' }}> No record found in search</h2>
+                                                        : SearchedObjects.map((item, index) => {
+                                                            return (
+                                                                <>
+                                                                    {(index % 3 == 0) && <div className='w-100'></div>}
+
+                                                                    < ExploreCard key={index} colSize={3} custom={`mt-md-4 mx-md-5`
+                                                                    } title={item.name} desc={item.desc} copies={item.copies} price={''} owner={item.owner} tokenId={item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} clickBehavior={navigateToMarkedRecord} endPoint={item.recordId} />
+                                                                </>
+                                                            )
+                                                        })
+
                                         }
 
                                     </div>
@@ -406,11 +525,13 @@ export default function Profile() {
 
                                         <div className={`col-md-7 ${style.blueBorder}`}>
                                             <TextField
+                                                value={SearchQuery}
+                                                onChange={handleInputChange}
                                                 placeholder="Enter your search"
                                                 InputProps={{
                                                     startAdornment: (
                                                         <InputAdornment position="start">
-                                                            <IconButton sx={{ color: 'white' }}>
+                                                            <IconButton sx={{ color: 'white' }} onClick={(event) => { search(event) }}>
                                                                 <Search />
                                                             </IconButton>
                                                         </InputAdornment>
@@ -447,19 +568,34 @@ export default function Profile() {
                                         {
                                             IsLoading ? <CircularProgress className='mx-auto' color="secondary" />
                                                 :
-                                                Objects.length === 0 ?
-                                                    <h2 className='mt-5' style={{ textAlign: 'center', letterSpacing: '1px' }}> No record found</h2>
-                                                    :
-                                                    Objects.map((item, index) => {
-                                                        return (
-                                                            <>
-                                                                {(index % 3 == 0) && <div className='w-100'></div>}
+                                                ShowSearch == false ?
+                                                    Objects.length === 0 ?
+                                                        <h2 className='mt-5' style={{ textAlign: 'center', letterSpacing: '1px' }}> No record found</h2>
+                                                        :
+                                                        Objects.map((item, index) => {
+                                                            return (
+                                                                <>
+                                                                    {(index % 3 == 0) && <div className='w-100'></div>}
 
-                                                                < ExploreCard key={index} colSize={3} custom={`mt-md-4 mx-md-5`
-                                                                } title={item.name} desc={item.desc} copies={item.copies} price={''} owner={item.owner} tokenId={item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} clickBehavior={navigateToViewSoldRecord} endPoint={item.recordId} />
-                                                            </>
-                                                        )
-                                                    })
+                                                                    < ExploreCard key={index} colSize={3} custom={`mt-md-4 mx-md-5`
+                                                                    } title={item.name} desc={item.desc} copies={item.copies} price={''} owner={item.owner} tokenId={item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} clickBehavior={navigateToViewSoldRecord} endPoint={item.recordId} />
+                                                                </>
+                                                            )
+                                                        })
+                                                    :
+                                                    SearchedObjects.length === 0 ?
+                                                        <h2 className='mt-5' style={{ textAlign: 'center', letterSpacing: '1px' }}> No record found in search</h2>
+                                                        :
+                                                        SearchedObjects.map((item, index) => {
+                                                            return (
+                                                                <>
+                                                                    {(index % 3 == 0) && <div className='w-100'></div>}
+
+                                                                    < ExploreCard key={index} colSize={3} custom={`mt-md-4 mx-md-5`
+                                                                    } title={item.name} desc={item.desc} copies={item.copies} price={''} owner={item.owner} tokenId={item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} clickBehavior={navigateToViewSoldRecord} endPoint={item.recordId} />
+                                                                </>
+                                                            )
+                                                        })
                                         }
 
                                     </div>
@@ -474,11 +610,13 @@ export default function Profile() {
 
                                         <div className={`col-md-7 ${style.blueBorder}`}>
                                             <TextField
+                                                value={SearchQuery}
+                                                onChange={handleInputChange}
                                                 placeholder="Enter your search"
                                                 InputProps={{
                                                     startAdornment: (
                                                         <InputAdornment position="start">
-                                                            <IconButton sx={{ color: 'white' }}>
+                                                            <IconButton sx={{ color: 'white' }} onClick={(event) => { search(event) }}>
                                                                 <Search />
                                                             </IconButton>
                                                         </InputAdornment>
@@ -515,19 +653,35 @@ export default function Profile() {
                                         {
                                             IsLoading ? <CircularProgress className='mx-auto' color="secondary" />
                                                 :
-                                                Objects.length === 0 ?
-                                                    <h2 className='mt-5' style={{ textAlign: 'center', letterSpacing: '1px' }}> No record found</h2>
-                                                    :
-                                                    Objects.map((item, index) => {
-                                                        return (
-                                                            <>
-                                                                {(index % 3 == 0) && <div className='w-100'></div>}
+                                                ShowSearch == false ?
+                                                    Objects.length === 0 ?
+                                                        <h2 className='mt-5' style={{ textAlign: 'center', letterSpacing: '1px' }}> No record found</h2>
+                                                        :
+                                                        Objects.map((item, index) => {
+                                                            return (
+                                                                <>
+                                                                    {(index % 3 == 0) && <div className='w-100'></div>}
 
-                                                                < ExploreCard key={index} colSize={3} custom={`mt-md-4 mx-md-5`
-                                                                } title={item.name} desc={item.desc} copies={item.copies} price={''} owner={item.owner} tokenId={item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} clickBehavior={navigateToViewBoughtRecord} endPoint={item.recordId} />
-                                                            </>
-                                                        )
-                                                    })
+                                                                    < ExploreCard key={index} colSize={3} custom={`mt-md-4 mx-md-5`
+                                                                    } title={item.name} desc={item.desc} copies={item.copies} price={''} owner={item.owner} tokenId={item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} clickBehavior={navigateToViewBoughtRecord} endPoint={item.recordId} />
+                                                                </>
+                                                            )
+                                                        })
+                                                    :
+                                                    SearchedObjects.length === 0 ?
+                                                        <h2 className='mt-5' style={{ textAlign: 'center', letterSpacing: '1px' }}> No record found in search</h2>
+                                                        :
+                                                        SearchedObjects.map((item, index) => {
+                                                            return (
+                                                                <>
+                                                                    {(index % 3 == 0) && <div className='w-100'></div>}
+
+                                                                    < ExploreCard key={index} colSize={3} custom={`mt-md-4 mx-md-5`
+                                                                    } title={item.name} desc={item.desc} copies={item.copies} price={''} owner={item.owner} tokenId={item.tokenId} img={`https://ipfs.io/ipfs/${item.imgUri}`} cardColor={'linear-gradient(138deg, #612257 0%, #952690 21.14%, #6F2D9A 42.68%, #672E99 67.49%, #45275D 99.99%, rgba(128, 36, 119, 0.00) 100%)'} clickBehavior={navigateToViewBoughtRecord} endPoint={item.recordId} />
+                                                                </>
+                                                            )
+                                                        })
+
                                         }
 
                                     </div>
