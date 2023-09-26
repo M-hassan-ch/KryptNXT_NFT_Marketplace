@@ -73,7 +73,11 @@ export default function Navbar(props) {
           <div className={`col-md-7 ${style.yellowBorder}`}>
             <div className={`row justify-content-end align-items-center`}>
               <div className={`col-md-6 ${style.blueBorder} p-0`}>
-                <input type="text" className={`${style.inputSearch}`} placeholder='   Search' />
+                <input type="text" className={`${style.inputSearch}`} placeholder='   Search' onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    navigateTo("/explore/nfts")
+                  }
+                }} />
                 {/* <a href="" class={`btn-block ${style.redBorder}`}>SEARCH BAR</a> */}
               </div>
 
@@ -82,9 +86,9 @@ export default function Navbar(props) {
                   <ul>
 
                     {/* <li ><Link to = {() => navigateTo("/explore")}>Explore</Link></li> */}
-                    <li style={{cursor:'pointer'}}><a onClick={() => navigateTo("/explore/nfts")}>Explore</a></li>
-                    <li style={{cursor:'pointer'}}><a onClick={() => navigateTo("/createNft")}>Create</a></li>
-                    <li style={{cursor:'pointer'}}><a onClick={() => navigateTo("/profile")}>MY NFTs</a></li>
+                    <li style={{ cursor: 'pointer' }}><a onClick={() => navigateTo("/explore/nfts")}>Explore</a></li>
+                    <li style={{ cursor: 'pointer' }}><a onClick={() => navigateTo("/createNft")}>Create</a></li>
+                    <li style={{ cursor: 'pointer' }}><a onClick={() => navigateTo("/profile")}>MY NFTs</a></li>
 
                     {/* <li ><Link to="/explore/nfts">Explore</Link></li> */}
                     {/* <li><a to="/createNft">Create</a></li> */}
